@@ -1,0 +1,9 @@
+MainClass=1
+IntegerLiteral=9
+Type=5
+VarDeclaration=3
+Statement=6
+Expression=7
+ClassDeclaration=2
+Identifier=8
+MethodDeclaration=4
