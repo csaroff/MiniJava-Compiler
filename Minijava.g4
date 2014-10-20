@@ -34,7 +34,10 @@ statement
 ;	
 
 expression	
-:	ePrime
+:	expression ( '&&' | '<' | '+' | '-' | '*' | '**' ) expression 
+|   expression '[' expression ']'
+|	expression '.' 'length'
+|	expression '.' Identifier '(' ( expression ( ',' expression )* )? ')'
 |	IntegerLiteral
 |	'true'
 |	'false'
@@ -45,19 +48,6 @@ expression
 |	'!' expression
 |	'(' expression ')'
 ;	
-
-ePrime
-: '&&' expression
-|  '<' expression
-|  '+' expression
-|  '-' expression
-|  '*' expression
-|  '[' expression ']'
-|  '.' 'length'
-|  '.' Identifier '(' ( expression ( ',' expression )* )? ')'
-;
-
-
 
 Identifier
 :	JavaLetter JavaLetterOrDigit*
@@ -125,3 +115,6 @@ Underscores
 :	'_'+
 ;
 
+WS
+:   [ \r\t\n]+ -> skip
+;   

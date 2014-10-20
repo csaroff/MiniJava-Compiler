@@ -64,18 +64,6 @@ public class MinijavaBaseListener implements MinijavaListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterEPrime(@NotNull MinijavaParser.EPrimeContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitEPrime(@NotNull MinijavaParser.EPrimeContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterType(@NotNull MinijavaParser.TypeContext ctx) { }
 	/**
 	 * {@inheritDoc}
