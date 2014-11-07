@@ -118,3 +118,10 @@ Underscores
 WS
 :   [ \r\t\n]+ -> skip
 ;   
+
+MULTILINE_COMMENT
+:  '/*' .*? '*/' -> skip
+;
+LINE_COMMENT
+:  '//' .*? '\n' -> skip
+;

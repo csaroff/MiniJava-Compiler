@@ -21,14 +21,14 @@ public class MinijavaParser extends Parser {
 		T__19=17, T__18=18, T__17=19, T__16=20, T__15=21, T__14=22, T__13=23, 
 		T__12=24, T__11=25, T__10=26, T__9=27, T__8=28, T__7=29, T__6=30, T__5=31, 
 		T__4=32, T__3=33, T__2=34, T__1=35, T__0=36, Identifier=37, IntegerLiteral=38, 
-		WS=39;
+		WS=39, MULTILINE_COMMENT=40, LINE_COMMENT=41;
 	public static final String[] tokenNames = {
 		"<INVALID>", "']'", "'public'", "','", "'while'", "'['", "'-'", "'*'", 
 		"'**'", "'('", "'if'", "'int'", "'<'", "'main'", "'false'", "'void'", 
 		"'{'", "'extends'", "'else'", "'boolean'", "'}'", "'true'", "'static'", 
 		"'length'", "'System.out.println'", "')'", "'.'", "'+'", "'='", "'return'", 
 		"'String'", "';'", "'&&'", "'this'", "'new'", "'class'", "'!'", "Identifier", 
-		"IntegerLiteral", "WS"
+		"IntegerLiteral", "WS", "MULTILINE_COMMENT", "LINE_COMMENT"
 	};
 	public static final int
 		RULE_goal = 0, RULE_mainClass = 1, RULE_classDeclaration = 2, RULE_varDeclaration = 3, 
@@ -826,7 +826,7 @@ public class MinijavaParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3)\u00d5\4\2\t\2\4"+
+		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3+\u00d5\4\2\t\2\4"+
 		"\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\3\2\3\2\7\2\25"+
 		"\n\2\f\2\16\2\30\13\2\3\2\3\2\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3"+
 		"\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\4\3\4\3\4\3\4\5\4\62\n\4\3\4\3\4\7"+
