@@ -1,9 +1,9 @@
 all:
 	java -jar /usr/local/lib/antlr-4.4-complete.jar Minijava.g4
 compile:
-	javac -cp .:/usr/local/lib/* Minijava*.java
-	javac -cp .:/usr/local/lib/* *Listener*.java
-	javac -cp .:/usr/local/lib/* Main.java
+	javac -cp .:/usr/local/lib/* src/Minijava*.java
+	javac -cp .:/usr/local/lib/* src/*Listener*.java
+	javac -cp .:/usr/local/lib/* src/Main.java
 killParser:
 	rm Minijava*.java
 	rm Minijava*.tokens
