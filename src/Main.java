@@ -3,6 +3,7 @@ import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.atn.PredictionMode;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
+import java.io.*;
 import java.util.*;
 
 public class Main{
@@ -25,7 +26,7 @@ public class Main{
 		parser.addErrorListener(new UnderlineListener());
 		//parser.addErrorListener(new VerboseListener());
 		ParseTree tree = parser.goal();
-        NameDefinitionListener namer = new NameDefinitionListener(klasses); 
+        ClassNamer namer = new ClassNamer(klasses); 
         AssignmentListener assigner = new AssignmentListener(klasses, parser);
         
         ParseTreeWalker.DEFAULT.walk(namer, tree);
@@ -33,18 +34,20 @@ public class Main{
 
 	}
     public static String getMethodSignature(MinijavaParser.MethodDeclarationContext ctx){
-        String methodName = ctx.Identifier().getText() + "(";
-        if(ctx.parameterList()!=null){
-            List<MinijavaParser.ParameterContext> paramCtxs = ctx.parameterList().parameter();
-            for(MinijavaParser.ParameterContext paramCtx : paramCtxs){
-                methodName+= paramCtx.type().getText() + ", ";
-            }
-            methodName = methodName.substring(0, methodName.length()-2);
-        }
-        //System.out.println("ctx.parameterList().getText() = " + ctx.parameterList().getText());
-
-        methodName += ")";
-		System.out.println("method name: " + methodName);
-        return methodName;
+        return ctx.Identifier().getText() + "()";
     }
+    //public static String getMethodSignature(MinijavaParser.MethodDeclarationContext ctx){
+    //    String methodName = ctx.Identifier().getText() + "(";
+    //    if(ctx.parameterList()!=null){
+    //        List<MinijavaParser.ParameterContext> paramCtxs = ctx.parameterList().parameter();
+    //        for(MinijavaParser.ParameterContext paramCtx : paramCtxs){
+    //            methodName+= paramCtx.type().getText() + ", ";
+    //        }
+    //        methodName = methodName.substring(0, methodName.length()-2);
+    //    }
+    //    //System.out.println("ctx.parameterList().getText() = " + ctx.parameterList().getText());
+    //    methodName += ")";
+	//	System.out.println("method name: " + methodName);
+    //    return methodName;
+    //}
 }

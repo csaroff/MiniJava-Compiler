@@ -10,41 +10,43 @@ import java.util.*;
 public class AssignmentListener extends MinijavaBaseListener {
     MinijavaParser parser;
     Map<String, Klass> klasses;
-    Klass currentKlass;
-    Klass.Method currentMethod = null;
+    //Klass currentKlass;
+    //Klass.Method currentMethod = null;
+    Stack<Scope> scopes = new Stack<Scope>();
+    Scope currentScope = null;
     public AssignmentListener(Map<String, Klass> klasses, MinijavaParser parser){
         this.klasses=klasses;
         this.parser=parser;
     }
     @Override public void enterClassDeclaration(@NotNull MinijavaParser.ClassDeclarationContext ctx) { 
-        currentKlass = klasses.get(ctx.Identifier(0).getText());
+        Klass klass = klasses.get(ctx.Identifier(0).getText());
+        currentScope = klass;
+        scopes.push(currentScope);
+        Klass superKlass;
         if(ctx.Identifier().size()>1){
-            Klass superKlass = klasses.get(ctx.Identifier(1).getText());
+            superKlass = klasses.get(ctx.Identifier(1).getText());
             if(superKlass==null){
-                    System.err.println("error: cannot find symbol.");
-                    ErrorPrinter.underlineError(parser, ctx.Identifier(1).getSymbol());
-                    System.err.println("symbol:   class " + ctx.Identifier(1).getText());
-                );
+                System.err.println("error: cannot find symbol.");
+                ErrorPrinter.underlineError(parser, ctx.Identifier(1).getSymbol());
+                System.err.println("symbol:   class " + ctx.Identifier(1).getText());
             }
+        }else{
+            superKlass=null;
         }
-
+        klass.superKlass = superKlass;
     }
     @Override public void exitClassDeclaration(@NotNull MinijavaParser.ClassDeclarationContext ctx) {
-        currentKlass=null;
+        //currentKlass=null;
+        currentScope = scopes.pop();
     }
     @Override public void enterMainClass(@NotNull MinijavaParser.MainClassContext ctx) {
     }
     @Override public void enterVarDeclaration(@NotNull MinijavaParser.VarDeclarationContext ctx) {
-        if(currentMethod==null){
-            currentKlass.fields.put(ctx.Identifier().getText(), new Klass.Variable(klasses.get(ctx.type().getText()), ctx.Identifier().getText()));
-        }else{
-            //Do method stuff.
-        }
+        String typeName = ctx.type().getText();
+        String varName = ctx.Identifier().getText();
+        currentScope.define(new Symbol(varName, klasses.get(typeName)));
     }
     @Override public void enterMethodDeclaration(@NotNull MinijavaParser.MethodDeclarationContext ctx) {
-        currentMethod = new Klass.Method(Main.getMethodSignature(ctx));
-        currentMethod = currentKlass.methods.get(Main.getMethodSignature(ctx));
-        //System.out.println("Current Klass: " + currentKlass + " and currentMethod = " + currentMethod);
         Klass returnType = klasses.get(ctx.type().getText());
         if(returnType==null){
             //The return type of this method is undefined.  
@@ -54,33 +56,52 @@ public class AssignmentListener extends MinijavaBaseListener {
             ErrorPrinter.printFullError(parser, ctx.type().Identifier().getSymbol(),
                 "error: cannot find symbol.",
                 "symbol:   class " + ctx.type().getText(),
-                "location: class " + currentKlass.name
+                "location: class " + currentScope.getScopeName()
             );
-        }else{
-            currentMethod.returnType=returnType;
         }
+        String methodName = Main.getMethodSignature(ctx);
+        Scope owner = currentScope;
+        Klass.Method method = new Klass.Method(returnType, methodName, owner);
+        currentScope.define(method);
+        scopes.push(method);
+        currentScope = method;
+        //System.out.println("Current Klass: " + currentKlass + " and currentMethod = " + currentMethod);
     }
     @Override public void exitMethodDeclaration(@NotNull MinijavaParser.MethodDeclarationContext ctx) {
-        currentMethod = null;
+        currentScope = scopes.pop();
     }
     @Override public void enterParameter(@NotNull MinijavaParser.ParameterContext ctx) {
-        Klass type = klasses.get(ctx.type().getText());
-        Klass.Variable param;
-        if(type==null){
+        Klass parameterType = klasses.get(ctx.type().getText());
+        Symbol parameter;
+        if(parameterType==null){
             //report error.  Undefined type.
             //error(ctx.Identifier().getSymbol(), "Error, undefined type.");
             ErrorPrinter.printFullError(parser, ctx.type().Identifier().getSymbol(),
                 "error: cannot find symbol.",
                 "symbol:   class " + ctx.type().getText(),
-                "location: class " + currentKlass.name
+                "location: class " + currentScope.getEnclosingScope().getScopeName()
             );
-        }else{
-            param = new Klass.Variable(type, ctx.Identifier().getText());
-            currentMethod.parameters.add(param);
         }
-
+        parameter = new Symbol(ctx.Identifier().getText(), parameterType);
+        ((Klass.Method)currentScope).addParameter(parameter);
     }
-    //public static void error(Token t, String msg) {
-    //    System.err.printf("line %d:%d %s\n", t.getLine(), t.getCharPositionInLine(), msg);
-    //}
+    void enterNestedStatement(@NotNull MinijavaParser.NestedStatementContext ctx){
+        createBlock();
+    }
+    void exitNestedStatement(@NotNull MinijavaParser.NestedStatementContext ctx){
+        currentScope = scopes.pop();
+    }
+    void enterWhileStatement(@NotNull MinijavaParser.WhileStatementContext ctx){
+        createBlock();
+    }
+    void exitWhileStatement(@NotNull MinijavaParser.WhileStatementContext ctx){
+        currentScope = scopes.pop();
+    }
+
+    public void createBlock(){
+        Klass.Block explicitScope = new Klass.Block(currentScope);
+        currentScope.define(explicitScope);
+        currentScope = explicitScope;
+        scopes.push(currentScope);
+    }
 }

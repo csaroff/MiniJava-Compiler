@@ -608,9 +608,66 @@ public class MinijavaParser extends Parser {
 	}
 
 	public static class StatementContext extends ParserRuleContext {
+		public StatementContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_statement; }
+	 
+		public StatementContext() { }
+		public void copyFrom(StatementContext ctx) {
+			super.copyFrom(ctx);
+		}
+	}
+	public static class VariableAssignmentStatementContext extends StatementContext {
+		public TerminalNode Identifier() { return getToken(MinijavaParser.Identifier, 0); }
+		public ExpressionContext expression() {
+			return getRuleContext(ExpressionContext.class,0);
+		}
+		public VariableAssignmentStatementContext(StatementContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof MinijavaListener ) ((MinijavaListener)listener).enterVariableAssignmentStatement(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof MinijavaListener ) ((MinijavaListener)listener).exitVariableAssignmentStatement(this);
+		}
+	}
+	public static class WhileStatementContext extends StatementContext {
+		public StatementContext statement() {
+			return getRuleContext(StatementContext.class,0);
+		}
+		public ExpressionContext expression() {
+			return getRuleContext(ExpressionContext.class,0);
+		}
+		public WhileStatementContext(StatementContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof MinijavaListener ) ((MinijavaListener)listener).enterWhileStatement(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof MinijavaListener ) ((MinijavaListener)listener).exitWhileStatement(this);
+		}
+	}
+	public static class NestedStatementContext extends StatementContext {
 		public List<StatementContext> statement() {
 			return getRuleContexts(StatementContext.class);
 		}
+		public StatementContext statement(int i) {
+			return getRuleContext(StatementContext.class,i);
+		}
+		public NestedStatementContext(StatementContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof MinijavaListener ) ((MinijavaListener)listener).enterNestedStatement(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof MinijavaListener ) ((MinijavaListener)listener).exitNestedStatement(this);
+		}
+	}
+	public static class ArrayAssignmentStatementContext extends StatementContext {
 		public ExpressionContext expression(int i) {
 			return getRuleContext(ExpressionContext.class,i);
 		}
@@ -618,20 +675,48 @@ public class MinijavaParser extends Parser {
 		public List<ExpressionContext> expression() {
 			return getRuleContexts(ExpressionContext.class);
 		}
-		public StatementContext statement(int i) {
-			return getRuleContext(StatementContext.class,i);
-		}
-		public StatementContext(ParserRuleContext parent, int invokingState) {
-			super(parent, invokingState);
-		}
-		@Override public int getRuleIndex() { return RULE_statement; }
+		public ArrayAssignmentStatementContext(StatementContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof MinijavaListener ) ((MinijavaListener)listener).enterStatement(this);
+			if ( listener instanceof MinijavaListener ) ((MinijavaListener)listener).enterArrayAssignmentStatement(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof MinijavaListener ) ((MinijavaListener)listener).exitStatement(this);
+			if ( listener instanceof MinijavaListener ) ((MinijavaListener)listener).exitArrayAssignmentStatement(this);
+		}
+	}
+	public static class IfElseStatementContext extends StatementContext {
+		public List<StatementContext> statement() {
+			return getRuleContexts(StatementContext.class);
+		}
+		public ExpressionContext expression() {
+			return getRuleContext(ExpressionContext.class,0);
+		}
+		public StatementContext statement(int i) {
+			return getRuleContext(StatementContext.class,i);
+		}
+		public IfElseStatementContext(StatementContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof MinijavaListener ) ((MinijavaListener)listener).enterIfElseStatement(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof MinijavaListener ) ((MinijavaListener)listener).exitIfElseStatement(this);
+		}
+	}
+	public static class PrintStatementContext extends StatementContext {
+		public ExpressionContext expression() {
+			return getRuleContext(ExpressionContext.class,0);
+		}
+		public PrintStatementContext(StatementContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof MinijavaListener ) ((MinijavaListener)listener).enterPrintStatement(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof MinijavaListener ) ((MinijavaListener)listener).exitPrintStatement(this);
 		}
 	}
 
@@ -643,6 +728,7 @@ public class MinijavaParser extends Parser {
 			setState(162);
 			switch ( getInterpreter().adaptivePredict(_input,10,_ctx) ) {
 			case 1:
+				_localctx = new NestedStatementContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(121); match(T__19);
@@ -663,6 +749,7 @@ public class MinijavaParser extends Parser {
 				}
 				break;
 			case 2:
+				_localctx = new IfElseStatementContext(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(129); match(T__24);
@@ -675,6 +762,7 @@ public class MinijavaParser extends Parser {
 				}
 				break;
 			case 3:
+				_localctx = new WhileStatementContext(_localctx);
 				enterOuterAlt(_localctx, 3);
 				{
 				setState(137); match(T__30);
@@ -685,6 +773,7 @@ public class MinijavaParser extends Parser {
 				}
 				break;
 			case 4:
+				_localctx = new PrintStatementContext(_localctx);
 				enterOuterAlt(_localctx, 4);
 				{
 				setState(143); match(T__12);
@@ -695,6 +784,7 @@ public class MinijavaParser extends Parser {
 				}
 				break;
 			case 5:
+				_localctx = new VariableAssignmentStatementContext(_localctx);
 				enterOuterAlt(_localctx, 5);
 				{
 				setState(149); match(Identifier);
@@ -704,6 +794,7 @@ public class MinijavaParser extends Parser {
 				}
 				break;
 			case 6:
+				_localctx = new ArrayAssignmentStatementContext(_localctx);
 				enterOuterAlt(_localctx, 6);
 				{
 				setState(154); match(Identifier);

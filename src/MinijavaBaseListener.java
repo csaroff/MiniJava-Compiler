@@ -28,6 +28,18 @@ public class MinijavaBaseListener implements MinijavaListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterVariableAssignmentStatement(@NotNull MinijavaParser.VariableAssignmentStatementContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitVariableAssignmentStatement(@NotNull MinijavaParser.VariableAssignmentStatementContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterPowExpression(@NotNull MinijavaParser.PowExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -88,18 +100,6 @@ public class MinijavaBaseListener implements MinijavaListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterParameter(@NotNull MinijavaParser.ParameterContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitParameter(@NotNull MinijavaParser.ParameterContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterLtExpression(@NotNull MinijavaParser.LtExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -112,6 +112,18 @@ public class MinijavaBaseListener implements MinijavaListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterParameter(@NotNull MinijavaParser.ParameterContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitParameter(@NotNull MinijavaParser.ParameterContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterArrayAccessExpression(@NotNull MinijavaParser.ArrayAccessExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -119,6 +131,18 @@ public class MinijavaBaseListener implements MinijavaListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitArrayAccessExpression(@NotNull MinijavaParser.ArrayAccessExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterNestedStatement(@NotNull MinijavaParser.NestedStatementContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitNestedStatement(@NotNull MinijavaParser.NestedStatementContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -155,6 +179,18 @@ public class MinijavaBaseListener implements MinijavaListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitMethodCallExpression(@NotNull MinijavaParser.MethodCallExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterIfElseStatement(@NotNull MinijavaParser.IfElseStatementContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitIfElseStatement(@NotNull MinijavaParser.IfElseStatementContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -268,6 +304,30 @@ public class MinijavaBaseListener implements MinijavaListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterArrayAssignmentStatement(@NotNull MinijavaParser.ArrayAssignmentStatementContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitArrayAssignmentStatement(@NotNull MinijavaParser.ArrayAssignmentStatementContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterPrintStatement(@NotNull MinijavaParser.PrintStatementContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitPrintStatement(@NotNull MinijavaParser.PrintStatementContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterGoal(@NotNull MinijavaParser.GoalContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -280,18 +340,6 @@ public class MinijavaBaseListener implements MinijavaListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterStatement(@NotNull MinijavaParser.StatementContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitStatement(@NotNull MinijavaParser.StatementContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterMethodBody(@NotNull MinijavaParser.MethodBodyContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -299,6 +347,18 @@ public class MinijavaBaseListener implements MinijavaListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitMethodBody(@NotNull MinijavaParser.MethodBodyContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterWhileStatement(@NotNull MinijavaParser.WhileStatementContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitWhileStatement(@NotNull MinijavaParser.WhileStatementContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

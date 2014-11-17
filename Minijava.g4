@@ -39,7 +39,7 @@ type
 statement	
 :	'{' statement* '}'
 #nestedStatement
-|	'if' '(' expression ')' statement 'else' statement
+|	'if' '(' expression ')' ifBlock 'else' elseBlock
 #ifElseStatement
 |	'while' '(' expression ')' statement
 #whileStatement
@@ -50,6 +50,14 @@ statement
 |	Identifier '[' expression ']' '=' expression ';'
 #arrayAssignmentStatement
 ;	
+
+ifBlock
+:	statement
+;
+
+elseBlock
+:	statement
+;
 
 expression
 :   expression '&&' expression

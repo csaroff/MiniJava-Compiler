@@ -2,3 +2,4 @@
 ./MiniJava*.token
 Makefile
 Example\ Symbol\ Table\ Source
+*.class

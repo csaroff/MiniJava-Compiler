@@ -20,6 +20,18 @@ public interface MinijavaListener extends ParseTreeListener {
 	 */
 	void exitThisExpression(@NotNull MinijavaParser.ThisExpressionContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code variableAssignmentStatement}
+	 * labeled alternative in {@link MinijavaParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterVariableAssignmentStatement(@NotNull MinijavaParser.VariableAssignmentStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code variableAssignmentStatement}
+	 * labeled alternative in {@link MinijavaParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitVariableAssignmentStatement(@NotNull MinijavaParser.VariableAssignmentStatementContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code powExpression}
 	 * labeled alternative in {@link MinijavaParser#expression}.
 	 * @param ctx the parse tree
@@ -78,16 +90,6 @@ public interface MinijavaListener extends ParseTreeListener {
 	 */
 	void exitAndExpression(@NotNull MinijavaParser.AndExpressionContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link MinijavaParser#parameter}.
-	 * @param ctx the parse tree
-	 */
-	void enterParameter(@NotNull MinijavaParser.ParameterContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link MinijavaParser#parameter}.
-	 * @param ctx the parse tree
-	 */
-	void exitParameter(@NotNull MinijavaParser.ParameterContext ctx);
-	/**
 	 * Enter a parse tree produced by the {@code ltExpression}
 	 * labeled alternative in {@link MinijavaParser#expression}.
 	 * @param ctx the parse tree
@@ -100,6 +102,16 @@ public interface MinijavaListener extends ParseTreeListener {
 	 */
 	void exitLtExpression(@NotNull MinijavaParser.LtExpressionContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link MinijavaParser#parameter}.
+	 * @param ctx the parse tree
+	 */
+	void enterParameter(@NotNull MinijavaParser.ParameterContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MinijavaParser#parameter}.
+	 * @param ctx the parse tree
+	 */
+	void exitParameter(@NotNull MinijavaParser.ParameterContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code arrayAccessExpression}
 	 * labeled alternative in {@link MinijavaParser#expression}.
 	 * @param ctx the parse tree
@@ -111,6 +123,18 @@ public interface MinijavaListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitArrayAccessExpression(@NotNull MinijavaParser.ArrayAccessExpressionContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code nestedStatement}
+	 * labeled alternative in {@link MinijavaParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterNestedStatement(@NotNull MinijavaParser.NestedStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code nestedStatement}
+	 * labeled alternative in {@link MinijavaParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitNestedStatement(@NotNull MinijavaParser.NestedStatementContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link MinijavaParser#mainClass}.
 	 * @param ctx the parse tree
@@ -143,6 +167,18 @@ public interface MinijavaListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitMethodCallExpression(@NotNull MinijavaParser.MethodCallExpressionContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ifElseStatement}
+	 * labeled alternative in {@link MinijavaParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterIfElseStatement(@NotNull MinijavaParser.IfElseStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ifElseStatement}
+	 * labeled alternative in {@link MinijavaParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitIfElseStatement(@NotNull MinijavaParser.IfElseStatementContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link MinijavaParser#methodDeclaration}.
 	 * @param ctx the parse tree
@@ -246,6 +282,30 @@ public interface MinijavaListener extends ParseTreeListener {
 	 */
 	void exitNotExpression(@NotNull MinijavaParser.NotExpressionContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code arrayAssignmentStatement}
+	 * labeled alternative in {@link MinijavaParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterArrayAssignmentStatement(@NotNull MinijavaParser.ArrayAssignmentStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code arrayAssignmentStatement}
+	 * labeled alternative in {@link MinijavaParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitArrayAssignmentStatement(@NotNull MinijavaParser.ArrayAssignmentStatementContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code printStatement}
+	 * labeled alternative in {@link MinijavaParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterPrintStatement(@NotNull MinijavaParser.PrintStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code printStatement}
+	 * labeled alternative in {@link MinijavaParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitPrintStatement(@NotNull MinijavaParser.PrintStatementContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link MinijavaParser#goal}.
 	 * @param ctx the parse tree
 	 */
@@ -256,16 +316,6 @@ public interface MinijavaListener extends ParseTreeListener {
 	 */
 	void exitGoal(@NotNull MinijavaParser.GoalContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link MinijavaParser#statement}.
-	 * @param ctx the parse tree
-	 */
-	void enterStatement(@NotNull MinijavaParser.StatementContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link MinijavaParser#statement}.
-	 * @param ctx the parse tree
-	 */
-	void exitStatement(@NotNull MinijavaParser.StatementContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link MinijavaParser#methodBody}.
 	 * @param ctx the parse tree
 	 */
@@ -275,6 +325,18 @@ public interface MinijavaListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitMethodBody(@NotNull MinijavaParser.MethodBodyContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code whileStatement}
+	 * labeled alternative in {@link MinijavaParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterWhileStatement(@NotNull MinijavaParser.WhileStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code whileStatement}
+	 * labeled alternative in {@link MinijavaParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitWhileStatement(@NotNull MinijavaParser.WhileStatementContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code parenExpression}
 	 * labeled alternative in {@link MinijavaParser#expression}.
