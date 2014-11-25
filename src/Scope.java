@@ -17,4 +17,18 @@ public interface Scope {
 
     /** Look up name in this scope or in enclosing scope if not here */
     public Symbol resolve(String name);
+    public Symbol resolveLocally(String name);
+
+	public static Klass getEnclosingKlass(Scope scope){
+		while(!(scope instanceof Klass)){
+			scope=scope.getEnclosingScope();
+		}
+		return (Klass)scope;//The outermost scope will always be a class.
+	}
+    public static Klass.Method getEnclosingMethod(Scope scope){
+        while(!(scope instanceof Klass.Method)){
+            scope = scope.getEnclosingScope();
+        }
+        return (Klass.Method)scope;
+    }
 }

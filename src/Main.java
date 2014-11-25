@@ -3,12 +3,13 @@ import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.atn.PredictionMode;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
+import org.antlr.v4.runtime.tree.ParseTreeProperty;
 import java.io.*;
 import java.util.*;
 
 public class Main{
+	private static String inputFile = null;
 	public static void main(String[] args) throws Exception {
-		String inputFile = null;
 		if ( args.length>0 ) inputFile = args[0];
 		InputStream is = System.in;
 		if ( inputFile!=null ) {
@@ -16,6 +17,7 @@ public class Main{
 		}
 		ANTLRInputStream input = new ANTLRInputStream(is);
 		Map<String, Klass> klasses = new HashMap<String, Klass>();//Symbol Table
+	    ParseTreeProperty<Scope> scopes = new ParseTreeProperty<Scope>();
 		MinijavaLexer lexer = new MinijavaLexer(input);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 		MinijavaParser parser = new MinijavaParser(tokens);
@@ -26,16 +28,35 @@ public class Main{
 		parser.addErrorListener(new UnderlineListener());
 		//parser.addErrorListener(new VerboseListener());
 		ParseTree tree = parser.goal();
+
+        //SymbolResolver resolver = new SymbolResolver(klasses, scopes, parser);
+
+ 
+        if(!ErrorPrinter.noErrors()){
+            //System.err.println("Encountered syntax errors.");
+            System.exit(1);
+        }
         ClassNamer namer = new ClassNamer(klasses); 
-        AssignmentListener assigner = new AssignmentListener(klasses, parser);
-        
         ParseTreeWalker.DEFAULT.walk(namer, tree);
-        ParseTreeWalker.DEFAULT.walk(assigner, tree);
+        if(!ErrorPrinter.noErrors()){
+            //System.err.println("Encountered class naming errors.");
+            System.exit(1);
+        }
+        AssignmentListener assigner = new AssignmentListener(klasses, scopes, parser);
+        ParseTreeWalker.DEFAULT.walk(assigner, tree); 
+        if(!ErrorPrinter.noErrors()){
+            //System.err.println("Encountered assignment errors.");
+            System.exit(1);
+        }
+        TypeChecker typeChecker = new TypeChecker(klasses, scopes, parser);
+        typeChecker.visit(tree);
+        if(!ErrorPrinter.noErrors()){
+            //System.err.println("Encountered type checking errors.");
+            System.exit(1);
+        }
 
 	}
-    public static String getMethodSignature(MinijavaParser.MethodDeclarationContext ctx){
-        return ctx.Identifier().getText() + "()";
-    }
+
     //public static String getMethodSignature(MinijavaParser.MethodDeclarationContext ctx){
     //    String methodName = ctx.Identifier().getText() + "(";
     //    if(ctx.parameterList()!=null){
@@ -50,4 +71,7 @@ public class Main{
 	//	System.out.println("method name: " + methodName);
     //    return methodName;
     //}
+    public static String getFileName(){
+    	return inputFile;
+    }
 }

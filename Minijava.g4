@@ -26,28 +26,32 @@ parameter
 ;
 
 methodBody
-:	varDeclaration* statement* 'return' expression ';'
+:	varDeclaration* statement* RETURN expression ';'
 ;
 
 type	
 :	'int' '[' ']'
+//#intArrayType
 |	'boolean'
+//#booleanType
 |	'int'
+//#intType
 |	Identifier
+//#referenceType
 ;	
 
 statement	
 :	'{' statement* '}'
 #nestedStatement
-|	'if' '(' expression ')' ifBlock 'else' elseBlock
+|	'if' LP expression RP ifBlock 'else' elseBlock
 #ifElseStatement
-|	'while' '(' expression ')' statement
+|	'while' LP expression RP statement
 #whileStatement
-|	'System.out.println' '('  expression ')' ';'
+|	'System.out.println' LP  expression RP ';'
 #printStatement
 |	Identifier '=' expression ';'
 #variableAssignmentStatement
-|	Identifier '[' expression ']' '=' expression ';'
+|	Identifier LSB expression RSB '=' expression ';'
 #arrayAssignmentStatement
 ;	
 
@@ -60,21 +64,21 @@ elseBlock
 ;
 
 expression
-:   expression '&&' expression
+:   expression AND expression
 # andExpression
-|   expression '<'  expression
+|   expression LT expression
 # ltExpression  
-|   expression '+'  expression
+|   expression PLUS expression
 # addExpression
-|   expression '-'  expression
+|   expression MINUS expression
 # subExpression
-|   expression '*'  expression
+|   expression TIMES expression
 # mulExpression
-|	expression '**' expression
+|	expression POWER expression
 # powExpression
-|   expression '[' expression ']'
+|   expression LSB expression RSB
 # arrayAccessExpression
-|   expression '.' 'length'
+|   expression DOTLENGTH
 # arrayLengthExpression
 |   expression '.' Identifier '(' ( expression ( ',' expression )* )? ')'
 # methodCallExpression
@@ -86,15 +90,29 @@ expression
 # identifierExpression
 |   'this'
 # thisExpression
-|   'new' 'int' '[' expression ']'
+|   'new' 'int' LSB expression RSB
 # arrayInstantiationExpression
 |   'new' Identifier '(' ')'
 # objectInstantiationExpression
-|   '!' expression
+|   NOT expression
 # notExpression
 |   '(' expression ')'
 # parenExpression
 ;
+
+AND:'&&';
+LT:'<';
+PLUS:'+';
+MINUS:'-';
+TIMES:'*';
+POWER:'**';
+NOT:'!';
+LSB:'[';
+RSB:']';
+DOTLENGTH:'.length';
+LP:'(';
+RP:')';
+RETURN: 'return';
 
 //expression	
 //:	expression ( '&&' | '<' | '+' | '-' | '*' | '**' ) expression 

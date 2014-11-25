@@ -32,5 +32,6 @@ public class UnderlineListener extends BaseErrorListener {
             for (int i=start; i<=stop; i++) System.err.print("^");
         }
         System.err.println();
+        ErrorPrinter.reportError();
     }
 }

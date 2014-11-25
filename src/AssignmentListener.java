@@ -9,23 +9,31 @@ import java.util.*;
 
 public class AssignmentListener extends MinijavaBaseListener {
     MinijavaParser parser;
-    Map<String, Klass> klasses;
-    //Klass currentKlass;
-    //Klass.Method currentMethod = null;
-    Stack<Scope> scopes = new Stack<Scope>();
+    final Map<String, Klass> klasses;
+    //Stack<Scope> scopes = new Stack<Scope>();
+    ParseTreeProperty<Scope> scopes;
     Scope currentScope = null;
-    public AssignmentListener(Map<String, Klass> klasses, MinijavaParser parser){
+    public AssignmentListener(final Map<String, Klass> klasses, ParseTreeProperty<Scope> scopes, MinijavaParser parser){
+        this.scopes=scopes;
         this.klasses=klasses;
         this.parser=parser;
+    }
+    void saveScope(ParserRuleContext ctx, Scope s) { scopes.put(ctx, s); }
+    @Override public void enterMainClass(@NotNull MinijavaParser.MainClassContext ctx) { 
+        Klass klass = klasses.get(ctx.Identifier(0).getText());
+        currentScope = klass;
+        saveScope(ctx, currentScope);
     }
     @Override public void enterClassDeclaration(@NotNull MinijavaParser.ClassDeclarationContext ctx) { 
         Klass klass = klasses.get(ctx.Identifier(0).getText());
         currentScope = klass;
-        scopes.push(currentScope);
+        saveScope(ctx, currentScope);
+        //scopes.push(currentScope);
         Klass superKlass;
         if(ctx.Identifier().size()>1){
             superKlass = klasses.get(ctx.Identifier(1).getText());
             if(superKlass==null){
+                ErrorPrinter.printFileNameAndLineNumber(ctx.Identifier(1).getSymbol());
                 System.err.println("error: cannot find symbol.");
                 ErrorPrinter.underlineError(parser, ctx.Identifier(1).getSymbol());
                 System.err.println("symbol:   class " + ctx.Identifier(1).getText());
@@ -34,16 +42,18 @@ public class AssignmentListener extends MinijavaBaseListener {
             superKlass=null;
         }
         klass.superKlass = superKlass;
+
     }
     @Override public void exitClassDeclaration(@NotNull MinijavaParser.ClassDeclarationContext ctx) {
         //currentKlass=null;
-        currentScope = scopes.pop();
-    }
-    @Override public void enterMainClass(@NotNull MinijavaParser.MainClassContext ctx) {
+        currentScope = currentScope.getEnclosingScope();
     }
     @Override public void enterVarDeclaration(@NotNull MinijavaParser.VarDeclarationContext ctx) {
         String typeName = ctx.type().getText();
         String varName = ctx.Identifier().getText();
+        if(currentScope.resolveLocally(varName)!=null){
+            ErrorPrinter.printSymbolAlreadyDefinedError(parser, ctx.Identifier().getSymbol(), "variable", varName, currentScope.getScopeName());
+        }
         currentScope.define(new Symbol(varName, klasses.get(typeName)));
     }
     @Override public void enterMethodDeclaration(@NotNull MinijavaParser.MethodDeclarationContext ctx) {
@@ -59,16 +69,22 @@ public class AssignmentListener extends MinijavaBaseListener {
                 "location: class " + currentScope.getScopeName()
             );
         }
-        String methodName = Main.getMethodSignature(ctx);
+        String methodName = Klass.getMethodSignature(ctx);
+        //System.out.println("Current Scope = " + currentScope);
+        //System.out.println("Method Name = " + methodName);
+        if(currentScope.resolveLocally(methodName)!=null){
+            ErrorPrinter.printSymbolAlreadyDefinedError(parser, ctx.Identifier().getSymbol(), "method", methodName, currentScope.getScopeName());
+        }
         Scope owner = currentScope;
         Klass.Method method = new Klass.Method(returnType, methodName, owner);
         currentScope.define(method);
-        scopes.push(method);
         currentScope = method;
+        saveScope(ctx, currentScope);
+        //scopes.push(method);
         //System.out.println("Current Klass: " + currentKlass + " and currentMethod = " + currentMethod);
     }
     @Override public void exitMethodDeclaration(@NotNull MinijavaParser.MethodDeclarationContext ctx) {
-        currentScope = scopes.pop();
+        currentScope = currentScope.getEnclosingScope();
     }
     @Override public void enterParameter(@NotNull MinijavaParser.ParameterContext ctx) {
         Klass parameterType = klasses.get(ctx.type().getText());
@@ -85,23 +101,32 @@ public class AssignmentListener extends MinijavaBaseListener {
         parameter = new Symbol(ctx.Identifier().getText(), parameterType);
         ((Klass.Method)currentScope).addParameter(parameter);
     }
-    void enterNestedStatement(@NotNull MinijavaParser.NestedStatementContext ctx){
-        createBlock();
-    }
-    void exitNestedStatement(@NotNull MinijavaParser.NestedStatementContext ctx){
-        currentScope = scopes.pop();
-    }
-    void enterWhileStatement(@NotNull MinijavaParser.WhileStatementContext ctx){
-        createBlock();
-    }
-    void exitWhileStatement(@NotNull MinijavaParser.WhileStatementContext ctx){
-        currentScope = scopes.pop();
-    }
-
-    public void createBlock(){
+    //@Override public void enterNestedStatement(@NotNull MinijavaParser.NestedStatementContext ctx){
+    //    enterScope(ctx);
+    //}
+    //@Override public void exitNestedStatement(@NotNull MinijavaParser.NestedStatementContext ctx){
+    //    exitScope();
+    //}
+    //@Override public void enterIfBlock(@NotNull MinijavaParser.IfBlockContext ctx){
+    //    enterScope(ctx);
+    //}
+    //@Override public void exitIfBlock(@NotNull MinijavaParser.IfBlockContext ctx){
+    //    exitScope();
+    //}
+    //@Override public void enterWhileStatement(@NotNull MinijavaParser.WhileStatementContext ctx){
+    //    enterScope(ctx);
+    //}
+    //@Override public void exitWhileStatement(@NotNull MinijavaParser.WhileStatementContext ctx){
+    //    exitScope();
+    //}
+    public void enterScope(ParserRuleContext ctx){
         Klass.Block explicitScope = new Klass.Block(currentScope);
-        currentScope.define(explicitScope);
+        //Do parent scopes need to know about their children?
+        //currentScope.define(explicitScope);
         currentScope = explicitScope;
-        scopes.push(currentScope);
+        saveScope(ctx, currentScope);
+    }
+    public void exitScope(){
+        currentScope = currentScope.getEnclosingScope();
     }
 }

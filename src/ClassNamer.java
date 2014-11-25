@@ -25,8 +25,13 @@ public class ClassNamer extends MinijavaBaseListener {
         klasses.put(currentKlass.name,currentKlass);
         currentKlass = new Klass("int", false);
         klasses.put(currentKlass.name,currentKlass);
+        //System.out.println("Klasses.get(\"int\" = " + klasses.get("int"));
+        
         currentKlass = new Klass("boolean", false);
         klasses.put(currentKlass.name,currentKlass);
+        
+        currentKlass = new Klass(ctx.Identifier(0).getText(), true);
+        klasses.put(currentKlass.name, currentKlass);
     }
     @Override public void enterVarDeclaration(@NotNull MinijavaParser.VarDeclarationContext ctx) {
         //if(currentMethod==null){
