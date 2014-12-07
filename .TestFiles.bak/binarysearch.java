@@ -37,10 +37,7 @@ class BS{
 
 	return 999 ;
     }
-    public int f(){
-        size = size+1;
-        return this.f();
-    }
+
 
     // Search for a specific value (num) using
     // binary search
@@ -55,7 +52,7 @@ class BS{
 
 	aux01 = 0 ;
 	bs01 = false ;
-	//right = number.length ;
+	right = number.length ;
 	right = right - 1 ;
 	left = 0 ;
 	var_cont = true ;
@@ -144,4 +141,5 @@ class BS{
 	}
 	return 0 ;	
     }
+
 }

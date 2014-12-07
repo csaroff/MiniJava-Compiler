@@ -1,11 +1,7 @@
-/***
- * Excerpted from "Language Implementation Patterns",
- * published by The Pragmatic Bookshelf.
- * Copyrights apply to this code. It may not be used to create training material, 
- * courses, books, articles, and the like. Contact us if you are in doubt.
- * We make no guarantees that this code is fit for any purpose. 
- * Visit http://www.pragmaticprogrammer.com/titles/tpdsl for more book information.
-***/
+import java.util.*;
+
+/** An interface for defining scopes and scoping rules for Minijava. 
+*/
 public interface Scope {
     public String getScopeName();
 
@@ -15,20 +11,35 @@ public interface Scope {
     /** Define a symbol in the current scope */
     public void define(Symbol sym);
 
+    public void initialize(Symbol sym);
+
     /** Look up name in this scope or in enclosing scope if not here */
     public Symbol resolve(String name);
+    
     public Symbol resolveLocally(String name);
+    
+    public boolean hasBeenInitialized(String name);
+    
+    public Set<Symbol> getInitializedVariables();
 
+    //public void uninitializeSymbols();
+    //public void addIfElseInitialization(Set<Symbol> symbols);
+    //
+    //public void clearIfElseInitialization();
+
+    /** -----------------------------------------------------------------
+    |            Static methods don't need to be overwritten.            |
+     -------------------------------------------------------------------*/
 	public static Klass getEnclosingKlass(Scope scope){
 		while(!(scope instanceof Klass)){
 			scope=scope.getEnclosingScope();
 		}
 		return (Klass)scope;//The outermost scope will always be a class.
 	}
-    public static Klass.Method getEnclosingMethod(Scope scope){
-        while(!(scope instanceof Klass.Method)){
+    public static Method getEnclosingMethod(Scope scope){
+        while(!(scope instanceof Method)){
             scope = scope.getEnclosingScope();
         }
-        return (Klass.Method)scope;
+        return (Method)scope;
     }
 }

@@ -25,66 +25,31 @@ public class TypeChecker extends MinijavaBaseVisitor<Klass> {
 		INTARRAY = klasses.get("int[]");
 		BOOLEAN = klasses.get("boolean");
 		this.parser=parser;
-		//throw new Exception("");
 	}
-	//@Override protected Klass aggregateResult(Klass aggregate, Klass nextResult){
-	//	if(aggregate==null){
-	//		return nextResult;
-	//	}
-	//	return aggregate;
-	//}
-	//public Klass visitChildren(@NotNull RuleNode node){
-	//	Klass result = defaultResult();
-	//	for(int i=0; i< node.getChildCount(); i++){
-	//		if (!shouldVisitNextChild(node, result)) {
-	//			break;
-	//		}
-	//		ParseTree c = node.getChild(i);
-	//		RuleNode internalNode;
-	//		if(c instanceof RuleNode){
-	//		internalNode = (RuleNode)c;
-	//		result = aggregateResult(result, visitChildren(internalNode));
-	//		}
-	//	}
-	//	return result;
-	//}
 	@Override public Klass visitMainClass(@NotNull MinijavaParser.MainClassContext ctx){
 		return scopingCall(ctx);
 	} 
 	@Override public Klass visitClassDeclaration(@NotNull MinijavaParser.ClassDeclarationContext ctx) { 
-		//currentScope = scopes.get(ctx);
-		//System.out.println("currentScope = " + currentScope);
-		//visitChildren(ctx);
-		//currentScope = currentScope.getEnclosingScope();
-		//return null;
 		return scopingCall(ctx); 
 	}
 	@Override public Klass visitMethodDeclaration(@NotNull MinijavaParser.MethodDeclarationContext ctx) { 
-		//currentScope = scopes.get(ctx);
-		//visitChildren(ctx);
-		//currentScope = currentScope.getEnclosingScope();
-		//return null;
 		return scopingCall(ctx); 
 	}
 	@Override public Klass visitMethodBody(@NotNull MinijavaParser.MethodBodyContext ctx) {
-		//visitChildren(ctx);
+        //The return type type-check is working correctly with inheritence.
 		for(MinijavaParser.VarDeclarationContext pCtx : ctx.varDeclaration()){visit(pCtx);}
 		for(MinijavaParser.StatementContext pCtx : ctx.statement()){visit(pCtx);}
 		Klass formalReturnType = Scope.getEnclosingMethod(currentScope).getType();
-		//if(formalReturnType==null){System.err.println("The formal return type is null, which should never happen.");}
 		Klass actualReturnType = visit(ctx.expression());
-		//System.out.println("The children are: " + ctx.children);
-		if(formalReturnType!=actualReturnType){
+		if(!actualReturnType.isInstanceOf(formalReturnType)){
 			ErrorPrinter.printRequiredFoundError(
 				"error: incompatible types.", parser, ctx.RETURN().getSymbol(), formalReturnType.toString(), actualReturnType.toString());
 		}
 		return null;
 	}
-		
-
 	@Override public Klass visitType(@NotNull MinijavaParser.TypeContext ctx) {
+        //Correctly reported error during variable intialization test with non-existent class.
 		if(ctx.Identifier()!=null){//it is a reference type
-	        //ErrorPrinter.printFileNameAndLineNumber(ctx.Identifier().getSymbol());
 	        String name = ctx.Identifier().getSymbol().getText();
 	        Klass var = klasses.get(name);
 	        if(var==null){
@@ -95,6 +60,7 @@ public class TypeChecker extends MinijavaBaseVisitor<Klass> {
 	    return null;
 	}
 	@Override public Klass visitIfElseStatement(@NotNull MinijavaParser.IfElseStatementContext ctx) {
+        //Correctly reported error with int instead of boolean.
 		visit(ctx.ifBlock());
 		visit(ctx.elseBlock());
 		Klass booleanExpression = visit(ctx.expression());
@@ -105,6 +71,7 @@ public class TypeChecker extends MinijavaBaseVisitor<Klass> {
 		return null;
 	}
 	@Override public Klass visitWhileStatement(@NotNull MinijavaParser.WhileStatementContext ctx) {
+        //Correctly reported error with int instead of boolean.
 		visit(ctx.statement());
 		Klass booleanExpression = visit(ctx.expression());
 		if(booleanExpression!=BOOLEAN){
@@ -114,7 +81,7 @@ public class TypeChecker extends MinijavaBaseVisitor<Klass> {
 		return null;
 	}
 	@Override public Klass visitPrintStatement(@NotNull MinijavaParser.PrintStatementContext ctx) {
-
+        //Correctly reported error of boolean instead of int.
 		Klass printContents = visit(ctx.expression());
 		if(printContents!=INT){
 		ErrorPrinter.printRequiredFoundError(
@@ -122,18 +89,21 @@ public class TypeChecker extends MinijavaBaseVisitor<Klass> {
 		}
 		return null;
 	}
-    @Override public Klass visitVariableAssignmentStatement(MinijavaParser.VariableAssignmentStatementContext ctx) {
+    @Override public Klass visitVariableAssignmentStatement(MinijavaParser.VariableAssignmentStatementContext ctx){
+        //correctly reported errors in all cases.
         String name = ctx.Identifier().getSymbol().getText();
         Symbol var = currentScope.resolve(name);
+
         Klass rightSide = visit(ctx.expression());
         if ( var==null ) {
         	ErrorPrinter.printUnresolvedSymbolError(parser, ctx.Identifier().getSymbol(), "variable", Scope.getEnclosingKlass(currentScope));
-        }else if(rightSide!=null && var.getType()!=rightSide){
+        }else if(rightSide!=null && !rightSide.isInstanceOf(var.getType())){
 	        	ErrorPrinter.printRequiredFoundError("error: incompatible types.", parser, ctx.Identifier().getSymbol(), var.getType().toString(), (rightSide.toString()));
     	}
        	return null;
     }
 	@Override public Klass visitArrayAssignmentStatement(@NotNull MinijavaParser.ArrayAssignmentStatementContext ctx) {
+        //correctly reported errors in all cases
         String name = ctx.Identifier().getSymbol().getText();
         Symbol var = currentScope.resolve(name);
         Klass index = visit(ctx.expression(0));
@@ -141,22 +111,12 @@ public class TypeChecker extends MinijavaBaseVisitor<Klass> {
         if ( var==null ) {
         	ErrorPrinter.printUnresolvedSymbolError(parser, ctx.Identifier().getSymbol(), "variable", Scope.getEnclosingKlass(currentScope));
         }else if(rightSide!=null && INT!=rightSide){
-	       	ErrorPrinter.printRequiredFoundError("error: incompatible types.", parser, ctx.Identifier().getSymbol(), var.toString(), (rightSide.toString()));
+	       	ErrorPrinter.printRequiredFoundError("error: incompatible types.", parser, ctx.EQ().getSymbol(), INT.toString(), (rightSide.toString()));
         }else if(index!=INT){
-        	ErrorPrinter.printRequiredFoundError("error: incompatible type.", parser, ctx.LSB().getSymbol(), INT.toString(), index.toString());
+        	ErrorPrinter.printRequiredFoundError("error: incompatible types.", parser, ctx.LSB().getSymbol(), INT.toString(), index.toString());
         }
         return null;
 	}
-    //@Override public void exitMethodCallExpression(MinijavaParser.MethodCallExpressionContext ctx) {
-    //    // can only handle f(...) not expr(...)
-    //    //ErrorPrinter.printFileNameAndLineNumber(ctx.Identifier().getSymbol());
-    //	Klass klass = new TypeChecker(klasses, scopes, parser).visit(ctx.expression(0));
-    //    String funcName = ctx.Identifier().getText()+"()";
-    //    Symbol meth = klass.resolve(funcName);
-    //}
-	//@Override public void exitIdentifierExpression(@NotNull MinijavaParser.IdentifierExpressionContext ctx) {
-	//
-	//}
 	@Override public Klass visitAndExpression(@NotNull MinijavaParser.AndExpressionContext ctx) { 
 	    ErrorPrinter.binaryOperatorTypeError(parser, ctx, ctx.AND().getSymbol(), visit(ctx.expression(0)), visit(ctx.expression(1)), BOOLEAN, BOOLEAN);
 		return BOOLEAN; 
@@ -178,10 +138,12 @@ public class TypeChecker extends MinijavaBaseVisitor<Klass> {
 		return INT;
 	}
 	@Override public Klass visitPowExpression(@NotNull MinijavaParser.PowExpressionContext ctx) { 
+        //Error reporting test successful.
 	    ErrorPrinter.binaryOperatorTypeError(parser, ctx, ctx.POWER().getSymbol(), visit(ctx.expression(0)), visit(ctx.expression(1)), INT, INT);
 		return INT;
 	}
 	@Override public Klass visitArrayAccessExpression(@NotNull MinijavaParser.ArrayAccessExpressionContext ctx) {
+        //Error reporting test successful.
 		Klass array = visit(ctx.expression(0));
 		Klass index = visit(ctx.expression(1));
 		if(array!=INTARRAY){
@@ -192,7 +154,6 @@ public class TypeChecker extends MinijavaBaseVisitor<Klass> {
 		if(index!=INT){
 			ErrorPrinter.printRequiredFoundError("error: incompatible type.", parser, ctx.LSB().getSymbol(), INT.toString(), index.toString());
 		}
-		//ErrorPrinter.binaryOperatorTypeError(parser, ctx, ctx.LSB().getSymbol(), visit(ctx.expression(0)), visit(ctx.expression(1)), INTARRAY, INT);
 		return INT;
 	}
 	@Override public Klass visitArrayLengthExpression(@NotNull MinijavaParser.ArrayLengthExpressionContext ctx) {
@@ -206,34 +167,34 @@ public class TypeChecker extends MinijavaBaseVisitor<Klass> {
 	}
 	@Override public Klass visitMethodCallExpression(@NotNull MinijavaParser.MethodCallExpressionContext ctx) {
 		Klass type = visit(ctx.expression(0));
-        //String funcName = ctx.Identifier().getText()+"()";
-        //Symbol meth = type.resolve(funcName);
 		if(type==null){
 			return null;
 		}
 		String methodName = ctx.Identifier().getText() +"()";
-		Klass.Method method = (Klass.Method)(type.resolve(methodName));
-		//for(String symbol : type.symTable.keySet()){
-		//	System.out.println("Symbol: " + symbol);
-		//}
+		Method method = (Method)(type.resolve(methodName));
         if (method==null ) {
-        		//System.out.println("currentScope = " + currentScope);
-        		//ErrorPrinter.printFileNameAndLineNumber(ctx.Identifier().getSymbol());
         		ErrorPrinter.printUnresolvedSymbolError(parser, ctx.Identifier().getSymbol(), "method", type);
         		return null;
     	}else{
 			List<Klass> parameterList = new ArrayList<Klass>();
-			//System.out.println("type of first parameter = " + visit(ctx.expression(1)));
-			//parameterList.add(visit(ctx.expression(1)));
 			for(MinijavaParser.ExpressionContext expCtx : ctx.expression().subList(1, ctx.expression().size())){
 				parameterList.add(visit(expCtx));
 			}
 			List<Klass> parameterListDefinition = method.getParameterListDefinition();
-			if(!parameterList.equals(parameterListDefinition)){
+            if(parameterListDefinition.size()!=parameterList.size()){
 				ErrorPrinter.printRequiredFoundError(
 					"error: method call parameters of method " + method.getName() + " do not match method definition.",
 					parser, ctx.Identifier().getSymbol(), parameterListDefinition.toString(), parameterList.toString());
-			}
+                System.err.println("reason: actual and formal argument lists differ in length.");
+                return method.getType();
+            }
+            for(int i=0; i<parameterListDefinition.size(); i++){
+                if(!parameterList.get(i).isInstanceOf(parameterListDefinition.get(i))){
+				ErrorPrinter.printRequiredFoundError(
+					"error: method call parameters of method " + method.getName() + " do not match method definition.",
+					parser, ctx.Identifier().getSymbol(), parameterListDefinition.toString(), parameterList.toString());
+                }
+            }
 			return method.getType();
 		}
 	}
@@ -287,11 +248,4 @@ public class TypeChecker extends MinijavaBaseVisitor<Klass> {
 		currentScope = currentScope.getEnclosingScope();
 		return null;
 	}
-	//public Klass getEnclosingKlass(Scope scope){
-	//	while(scope.getEnclosingScope()!=null){
-	//		scope=scope.getEnclosingScope();
-	//	}
-	//	return (Klass)scope;//The outermost scope will always be a class.
-	//}
-
 }

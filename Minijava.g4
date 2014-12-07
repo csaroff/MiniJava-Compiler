@@ -49,9 +49,9 @@ statement
 #whileStatement
 |	'System.out.println' LP  expression RP ';'
 #printStatement
-|	Identifier '=' expression ';'
+|	Identifier EQ expression ';'
 #variableAssignmentStatement
-|	Identifier LSB expression RSB '=' expression ';'
+|	Identifier LSB expression RSB EQ expression ';'
 #arrayAssignmentStatement
 ;	
 
@@ -113,6 +113,7 @@ DOTLENGTH:'.length';
 LP:'(';
 RP:')';
 RETURN: 'return';
+EQ: '=';
 
 //expression	
 //:	expression ( '&&' | '<' | '+' | '-' | '*' | '**' ) expression 

@@ -33,28 +33,33 @@ public class Main{
 
  
         if(!ErrorPrinter.noErrors()){
-            //System.err.println("Encountered syntax errors.");
+            System.err.println(ErrorPrinter.getErrorCount() + " errors.");
             System.exit(1);
         }
         ClassNamer namer = new ClassNamer(klasses); 
         ParseTreeWalker.DEFAULT.walk(namer, tree);
         if(!ErrorPrinter.noErrors()){
-            //System.err.println("Encountered class naming errors.");
+            System.err.println(ErrorPrinter.getErrorCount() + " errors.");
             System.exit(1);
         }
         AssignmentListener assigner = new AssignmentListener(klasses, scopes, parser);
         ParseTreeWalker.DEFAULT.walk(assigner, tree); 
         if(!ErrorPrinter.noErrors()){
-            //System.err.println("Encountered assignment errors.");
+            System.err.println(ErrorPrinter.getErrorCount() + " errors.");
             System.exit(1);
         }
         TypeChecker typeChecker = new TypeChecker(klasses, scopes, parser);
         typeChecker.visit(tree);
         if(!ErrorPrinter.noErrors()){
-            //System.err.println("Encountered type checking errors.");
+            System.err.println(ErrorPrinter.getErrorCount() + " errors.");
             System.exit(1);
         }
-
+        InitializationBeforeUseChecker iBeforeUChecker = new InitializationBeforeUseChecker(klasses, scopes, parser);
+        iBeforeUChecker.visit(tree);
+        if(!ErrorPrinter.noErrors()){
+            System.err.println(ErrorPrinter.getErrorCount() + " errors.");
+            System.exit(1);
+        }
 	}
 
     //public static String getMethodSignature(MinijavaParser.MethodDeclarationContext ctx){

@@ -1,3 +1,4 @@
+src/.InitializationBeforeUse.java
 ./MiniJava*.java
 ./MiniJava*.token
 Makefile

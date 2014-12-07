@@ -42,7 +42,6 @@ public class AssignmentListener extends MinijavaBaseListener {
             superKlass=null;
         }
         klass.superKlass = superKlass;
-
     }
     @Override public void exitClassDeclaration(@NotNull MinijavaParser.ClassDeclarationContext ctx) {
         //currentKlass=null;
@@ -69,14 +68,14 @@ public class AssignmentListener extends MinijavaBaseListener {
                 "location: class " + currentScope.getScopeName()
             );
         }
-        String methodName = Klass.getMethodSignature(ctx);
+        String methodName = Method.getMethodSignature(ctx);
         //System.out.println("Current Scope = " + currentScope);
         //System.out.println("Method Name = " + methodName);
         if(currentScope.resolveLocally(methodName)!=null){
             ErrorPrinter.printSymbolAlreadyDefinedError(parser, ctx.Identifier().getSymbol(), "method", methodName, currentScope.getScopeName());
         }
         Scope owner = currentScope;
-        Klass.Method method = new Klass.Method(returnType, methodName, owner);
+        Method method = new Method(returnType, methodName, owner);
         currentScope.define(method);
         currentScope = method;
         saveScope(ctx, currentScope);
@@ -99,28 +98,34 @@ public class AssignmentListener extends MinijavaBaseListener {
             );
         }
         parameter = new Symbol(ctx.Identifier().getText(), parameterType);
-        ((Klass.Method)currentScope).addParameter(parameter);
+        ((Method)currentScope).addParameter(parameter);
     }
-    //@Override public void enterNestedStatement(@NotNull MinijavaParser.NestedStatementContext ctx){
-    //    enterScope(ctx);
-    //}
-    //@Override public void exitNestedStatement(@NotNull MinijavaParser.NestedStatementContext ctx){
-    //    exitScope();
-    //}
-    //@Override public void enterIfBlock(@NotNull MinijavaParser.IfBlockContext ctx){
-    //    enterScope(ctx);
-    //}
-    //@Override public void exitIfBlock(@NotNull MinijavaParser.IfBlockContext ctx){
-    //    exitScope();
-    //}
-    //@Override public void enterWhileStatement(@NotNull MinijavaParser.WhileStatementContext ctx){
-    //    enterScope(ctx);
-    //}
-    //@Override public void exitWhileStatement(@NotNull MinijavaParser.WhileStatementContext ctx){
-    //    exitScope();
-    //}
+    @Override public void enterNestedStatement(@NotNull MinijavaParser.NestedStatementContext ctx){
+        enterScope(ctx);
+    }
+    @Override public void exitNestedStatement(@NotNull MinijavaParser.NestedStatementContext ctx){
+        exitScope();
+    }
+    @Override public void enterIfBlock(@NotNull MinijavaParser.IfBlockContext ctx){
+        enterScope(ctx);
+    }
+    @Override public void exitIfBlock(@NotNull MinijavaParser.IfBlockContext ctx){
+        exitScope();
+    }
+    @Override public void enterElseBlock(@NotNull MinijavaParser.ElseBlockContext ctx){
+        enterScope(ctx);
+    }
+    @Override public void exitElseBlock(@NotNull MinijavaParser.ElseBlockContext ctx){
+        exitScope();
+    }
+    @Override public void enterWhileStatement(@NotNull MinijavaParser.WhileStatementContext ctx){
+        enterScope(ctx);
+    }
+    @Override public void exitWhileStatement(@NotNull MinijavaParser.WhileStatementContext ctx){
+        exitScope();
+    }
     public void enterScope(ParserRuleContext ctx){
-        Klass.Block explicitScope = new Klass.Block(currentScope);
+        Block explicitScope = new Block(currentScope);
         //Do parent scopes need to know about their children?
         //currentScope.define(explicitScope);
         currentScope = explicitScope;

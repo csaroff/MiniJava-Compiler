@@ -4,6 +4,7 @@ import java.util.*;
 
 public final class ErrorPrinter{
     private static boolean hasError = false;
+    private static int errorCount=0;
 	//private ErrorPrinter(){
     //}
     public static boolean noErrors(){
@@ -11,7 +12,10 @@ public final class ErrorPrinter{
     }
     public static void reportError(){
         hasError=true;
+        errorCount++;
     }
+    public static int getErrorCount(){return errorCount;}
+    public static void resetErrorCount(){errorCount=0;}
     public static void printFileNameAndLineNumber(Token offendingToken){
         reportError();
         System.err.print(Main.getFileName()+":"+offendingToken.getLine()+": ");
@@ -23,6 +27,11 @@ public final class ErrorPrinter{
         underlineError(recognizer, offendingToken);
         System.err.println("  " + symbol);
         System.err.println("  " + location);
+    }
+    public static void printVariableMayNotHaveBeenInitializedError(Recognizer recognizer, Token offendingToken, String symbolName){
+        ErrorPrinter.printFileNameAndLineNumber(offendingToken);
+        System.err.println("error: " + symbolName + " might not have been initialized");
+        ErrorPrinter.underlineError(recognizer, offendingToken);
     }
     public static void printSymbolAlreadyDefinedError(Recognizer recognizer, Token offendingToken, String symbolType, String symbol, String className){
         ErrorPrinter.printFileNameAndLineNumber(offendingToken);
