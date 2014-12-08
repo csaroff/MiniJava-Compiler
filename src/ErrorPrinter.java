@@ -22,11 +22,22 @@ public final class ErrorPrinter{
 
     }
     public static void printFullError(Recognizer recognizer, Token offendingToken, String message, String symbol, String location){
-        printFileNameAndLineNumber(offendingToken);
+        ErrorPrinter.printFileNameAndLineNumber(offendingToken);
         System.err.println(message);
-        underlineError(recognizer, offendingToken);
+        ErrorPrinter.underlineError(recognizer, offendingToken);
         System.err.println("  " + symbol);
         System.err.println("  " + location);
+    }
+    public static void printIncompatibleReturnTypeError(Recognizer recognizer, Token offendingToken, Klass originalKlass, Klass overwritingKlass, Method originalMethod, Method overwritingMethod){
+        ErrorPrinter.printFileNameAndLineNumber(offendingToken);
+        System.err.println("error: " + overwritingMethod + " in class " + overwritingKlass + " cannot override " + originalMethod + " in class " + originalKlass);
+        ErrorPrinter.underlineError(recognizer, offendingToken);
+        System.err.println("return type " + overwritingMethod.getType() + " is not compatible with type " + originalMethod.getType());
+    }
+    public static void printDuplicateClassError(Recognizer recognizer, Token offendingToken, String className){
+        ErrorPrinter.printFileNameAndLineNumber(offendingToken);
+        System.err.println("error: duplicate class: " + className);
+        ErrorPrinter.underlineError(recognizer, offendingToken);
     }
     public static void printVariableMayNotHaveBeenInitializedError(Recognizer recognizer, Token offendingToken, String symbolName){
         ErrorPrinter.printFileNameAndLineNumber(offendingToken);
@@ -46,7 +57,7 @@ public final class ErrorPrinter{
         System.err.println("  found:    " + found);
     }
     public static void binaryOperatorTypeError(Recognizer recognizer, ParserRuleContext ctx, Token operator, Klass foundLeft, Klass foundRight, Klass expectedLeft, Klass expectedRight){
-        if(!(foundLeft==expectedLeft && foundRight==expectedRight)){
+        if(foundLeft!=null && foundRight!=null && !(foundLeft==expectedLeft && foundRight==expectedRight)){
             ErrorPrinter.printFileNameAndLineNumber(operator);
             System.err.println("error: bad operand types for binary operator '" + operator.getText() + "'");
             ErrorPrinter.underlineError(recognizer, operator);
@@ -55,7 +66,7 @@ public final class ErrorPrinter{
         }
     }
     public static void printUnresolvedSymbolError(Recognizer recognizer, Token offendingToken, String symbolType, Klass location){
-        printFileNameAndLineNumber(offendingToken);
+        ErrorPrinter.printFileNameAndLineNumber(offendingToken);
         System.err.println("error: cannot find symbol");
         ErrorPrinter.underlineError(recognizer, offendingToken);
         System.err.println("  symbol:   " + symbolType + " " + offendingToken.getText());
@@ -90,16 +101,16 @@ public final class ErrorPrinter{
     //public static void printFileName(){
     //    System.err.print(Main.getFileName());
     //}
-    //public static void reportCyclicInheritance(Klass klass, MinijavaParser.ClassDeclarationContext ctx){
-    //    Klass original = klass;
-    //    while(klass!=null){
-    //        klass = klass.getSuperKlass();
-    //        if(klass==original){
-    //            
-    //            System.err.println("error: cyclic inheritance.");
-    //            ErrorPrinter.underlineError(parser, ctx.Identifier(1).getSymbol());
-    //            //System.exit(1);
-    //        }
-    //    }
-    //}
+    public static void reportCyclicInheritance(Recognizer recognizer, MinijavaParser.ClassDeclarationContext ctx, Klass klass){
+        Klass original = klass;
+        while(klass!=null){
+            klass = klass.getSuperKlass();
+            if(klass==original){
+                ErrorPrinter.printFileNameAndLineNumber(ctx.Identifier(1).getSymbol());
+                System.err.println("error: cyclic inheritance.");
+                ErrorPrinter.underlineError(recognizer, ctx.Identifier(1).getSymbol());
+                System.exit(1);
+            }
+        }
+    }
 }

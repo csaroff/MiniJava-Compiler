@@ -13,7 +13,7 @@ public class Method extends Symbol implements Scope{
 	}
 	
 	@Override public String getScopeName(){
-		return owner.getScopeName() + "." + this.name;
+		return this.name;
 	}
 	
 	@Override public Scope getEnclosingScope(){
@@ -94,11 +94,11 @@ public class Method extends Symbol implements Scope{
 		}
 		return parameterListDefinition;
 	}
-	
+	//public String getMethodSignature(){
+	//}
 	public String toString(){
 		return name;
 	}
-
 	/** -----------------------------------------------------------------
     |            				Static Methods.  				         |
      -------------------------------------------------------------------*/
@@ -106,4 +106,18 @@ public class Method extends Symbol implements Scope{
 		//System.out.println("Method Name = " + ctx.Identifier().getText()+"()");
 		return ctx.Identifier().getText() + "()";
 	}
+	//public static String getMethodSignature(MinijavaParser.MethodDeclarationContext ctx){
+    //    String methodName = ctx.Identifier().getText() + "(";
+    //    if(ctx.parameterList()!=null){
+    //        List<MinijavaParser.ParameterContext> paramCtxs = ctx.parameterList().parameter();
+    //        for(MinijavaParser.ParameterContext paramCtx : paramCtxs){
+    //            methodName+= paramCtx.type().getText() + ", ";
+    //        }
+    //        methodName = methodName.substring(0, methodName.length()-2);
+    //    }
+    //    //System.out.println("ctx.parameterList().getText() = " + ctx.parameterList().getText());
+    //    methodName += ")";
+	//	System.out.println("method name: " + methodName);
+    //    return methodName;
+    //}
 }

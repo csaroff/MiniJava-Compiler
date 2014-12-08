@@ -33,7 +33,22 @@ public class TypeChecker extends MinijavaBaseVisitor<Klass> {
 		return scopingCall(ctx); 
 	}
 	@Override public Klass visitMethodDeclaration(@NotNull MinijavaParser.MethodDeclarationContext ctx) { 
-		return scopingCall(ctx); 
+		currentScope = scopes.get(ctx);
+
+		Klass originalKlass = ((Klass)(currentScope.getEnclosingScope())).getSuperKlass();
+		Method originalMethod;
+		if(originalKlass==null){ originalMethod=null; }
+		else{ originalMethod=(Method)originalKlass.resolve(currentScope.getScopeName());}
+			
+		Method currentMethod = (Method)currentScope;
+		Klass currentKlass = (Klass)currentMethod.getEnclosingScope();
+        if(originalMethod!=null && originalMethod.getType() != currentMethod.getType()){
+            ErrorPrinter.printIncompatibleReturnTypeError(parser, ctx.Identifier().getSymbol(), originalKlass, currentKlass, originalMethod, currentMethod);
+        }
+
+		Klass result =  visitChildren(ctx);
+		currentScope = currentScope.getEnclosingScope();
+        return null;
 	}
 	@Override public Klass visitMethodBody(@NotNull MinijavaParser.MethodBodyContext ctx) {
         //The return type type-check is working correctly with inheritence.
@@ -41,7 +56,7 @@ public class TypeChecker extends MinijavaBaseVisitor<Klass> {
 		for(MinijavaParser.StatementContext pCtx : ctx.statement()){visit(pCtx);}
 		Klass formalReturnType = Scope.getEnclosingMethod(currentScope).getType();
 		Klass actualReturnType = visit(ctx.expression());
-		if(!actualReturnType.isInstanceOf(formalReturnType)){
+		if(actualReturnType!=null && !actualReturnType.isInstanceOf(formalReturnType)){
 			ErrorPrinter.printRequiredFoundError(
 				"error: incompatible types.", parser, ctx.RETURN().getSymbol(), formalReturnType.toString(), actualReturnType.toString());
 		}
@@ -61,9 +76,9 @@ public class TypeChecker extends MinijavaBaseVisitor<Klass> {
 	}
 	@Override public Klass visitIfElseStatement(@NotNull MinijavaParser.IfElseStatementContext ctx) {
         //Correctly reported error with int instead of boolean.
+		Klass booleanExpression = visit(ctx.expression());
 		visit(ctx.ifBlock());
 		visit(ctx.elseBlock());
-		Klass booleanExpression = visit(ctx.expression());
 		if(booleanExpression!=BOOLEAN){
 		ErrorPrinter.printRequiredFoundError(
 			"error: incompatible types.", parser, ctx.LP().getSymbol(), BOOLEAN.toString(), booleanExpression.toString());
@@ -83,7 +98,7 @@ public class TypeChecker extends MinijavaBaseVisitor<Klass> {
 	@Override public Klass visitPrintStatement(@NotNull MinijavaParser.PrintStatementContext ctx) {
         //Correctly reported error of boolean instead of int.
 		Klass printContents = visit(ctx.expression());
-		if(printContents!=INT){
+		if(printContents!=null && printContents!=INT){
 		ErrorPrinter.printRequiredFoundError(
 			"error: incompatible types.", parser, ctx.LP().getSymbol(), INT.toString(), printContents.toString());
 		}
@@ -104,12 +119,15 @@ public class TypeChecker extends MinijavaBaseVisitor<Klass> {
     }
 	@Override public Klass visitArrayAssignmentStatement(@NotNull MinijavaParser.ArrayAssignmentStatementContext ctx) {
         //correctly reported errors in all cases
+		//ErrorPrinter.printFileNameAndLineNumber(ctx.Identifier().getSymbol());
         String name = ctx.Identifier().getSymbol().getText();
         Symbol var = currentScope.resolve(name);
         Klass index = visit(ctx.expression(0));
         Klass rightSide = visit(ctx.expression(1));
         if ( var==null ) {
         	ErrorPrinter.printUnresolvedSymbolError(parser, ctx.Identifier().getSymbol(), "variable", Scope.getEnclosingKlass(currentScope));
+        }else if(var.getType()!=INTARRAY){
+	       	ErrorPrinter.printRequiredFoundError("error: incompatible types.", parser, ctx.LSB().getSymbol(), INTARRAY.toString(), (var.getType().toString()));
         }else if(rightSide!=null && INT!=rightSide){
 	       	ErrorPrinter.printRequiredFoundError("error: incompatible types.", parser, ctx.EQ().getSymbol(), INT.toString(), (rightSide.toString()));
         }else if(index!=INT){

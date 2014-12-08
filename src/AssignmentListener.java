@@ -42,6 +42,7 @@ public class AssignmentListener extends MinijavaBaseListener {
             superKlass=null;
         }
         klass.superKlass = superKlass;
+        ErrorPrinter.reportCyclicInheritance(parser, ctx, klass);
     }
     @Override public void exitClassDeclaration(@NotNull MinijavaParser.ClassDeclarationContext ctx) {
         //currentKlass=null;

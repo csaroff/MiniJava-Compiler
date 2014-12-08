@@ -8,14 +8,18 @@ import org.antlr.v4.runtime.tree.ParseTreeProperty;
 import java.util.*;
 public class ClassNamer extends MinijavaBaseListener {
     Map<String, Klass> klasses;
+    MinijavaParser parser;
     //Klass currentKlass;
     //Klass.Method currentMethod = null;
-    public ClassNamer(Map<String, Klass> klasses){
-        this.klasses=klasses;
+    public ClassNamer(Map<String, Klass> klasses, MinijavaParser parser){
+        this.klasses = klasses;
+        this.parser  = parser;
     }
     @Override public void enterClassDeclaration(@NotNull MinijavaParser.ClassDeclarationContext ctx) { 
         Klass currentKlass = new Klass(ctx.Identifier(0).getText(), true);
-        klasses.put(currentKlass.getScopeName(), currentKlass);
+        if(klasses.put(currentKlass.getScopeName(), currentKlass)!=null){
+            ErrorPrinter.printDuplicateClassError(parser, ctx.Identifier(0).getSymbol(), currentKlass.getScopeName());
+        }
     }
     @Override public void exitClassDeclaration(@NotNull MinijavaParser.ClassDeclarationContext ctx) {
     }
