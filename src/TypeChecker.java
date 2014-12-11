@@ -13,14 +13,16 @@ public class TypeChecker extends MinijavaBaseVisitor<Klass> {
 	final Map<String, Klass> klasses;
 	ParseTreeProperty<Scope> scopes;
 	Scope currentScope;
+	ParseTreeProperty<Klass> callerTypes;
 	MinijavaParser parser;
 	Klass INT;
 	Klass INTARRAY;
 	Klass BOOLEAN;
-	public TypeChecker(final Map<String, Klass> klasses, ParseTreeProperty<Scope> scopes, MinijavaParser parser)throws Exception{
+	public TypeChecker(final Map<String, Klass> klasses, ParseTreeProperty<Scope> scopes, ParseTreeProperty<Klass> callerTypes, MinijavaParser parser)throws Exception{
 		INT = klasses.get("int");
 		this.klasses = klasses;
-		this.scopes=scopes;        
+		this.scopes=scopes;
+		this.callerTypes = callerTypes;        
 		INT = klasses.get("int");
 		INTARRAY = klasses.get("int[]");
 		BOOLEAN = klasses.get("boolean");
@@ -52,7 +54,7 @@ public class TypeChecker extends MinijavaBaseVisitor<Klass> {
 	}
 	@Override public Klass visitMethodBody(@NotNull MinijavaParser.MethodBodyContext ctx) {
         //The return type type-check is working correctly with inheritence.
-		for(MinijavaParser.VarDeclarationContext pCtx : ctx.varDeclaration()){visit(pCtx);}
+		for(MinijavaParser.LocalDeclarationContext pCtx : ctx.localDeclaration()){visit(pCtx);}
 		for(MinijavaParser.StatementContext pCtx : ctx.statement()){visit(pCtx);}
 		Klass formalReturnType = Scope.getEnclosingMethod(currentScope).getType();
 		Klass actualReturnType = visit(ctx.expression());
@@ -87,8 +89,8 @@ public class TypeChecker extends MinijavaBaseVisitor<Klass> {
 	}
 	@Override public Klass visitWhileStatement(@NotNull MinijavaParser.WhileStatementContext ctx) {
         //Correctly reported error with int instead of boolean.
-		visit(ctx.statement());
 		Klass booleanExpression = visit(ctx.expression());
+		visit(ctx.whileBlock());
 		if(booleanExpression!=BOOLEAN){
 		ErrorPrinter.printRequiredFoundError(
 			"error: incompatible types.", parser, ctx.LP().getSymbol(), BOOLEAN.toString(), booleanExpression.toString());
@@ -185,6 +187,7 @@ public class TypeChecker extends MinijavaBaseVisitor<Klass> {
 	}
 	@Override public Klass visitMethodCallExpression(@NotNull MinijavaParser.MethodCallExpressionContext ctx) {
 		Klass type = visit(ctx.expression(0));
+		callerTypes.put(ctx, type);
 		if(type==null){
 			return null;
 		}
@@ -217,8 +220,14 @@ public class TypeChecker extends MinijavaBaseVisitor<Klass> {
 		}
 	}
 
-	@Override public Klass visitIntLitExpression(@NotNull MinijavaParser.IntLitExpressionContext ctx) { visitChildren(ctx); return INT;}
-	@Override public Klass visitBooleanLitExpression(@NotNull MinijavaParser.BooleanLitExpressionContext ctx) { visitChildren(ctx); return BOOLEAN; }
+	@Override public Klass visitIntLitExpression(@NotNull MinijavaParser.IntLitExpressionContext ctx) { 
+		visitChildren(ctx); 
+		return INT;
+	}
+	@Override public Klass visitBooleanLitExpression(@NotNull MinijavaParser.BooleanLitExpressionContext ctx) { 
+		visitChildren(ctx); 
+		return BOOLEAN;
+	}
 	@Override public Klass visitIdentifierExpression(@NotNull MinijavaParser.IdentifierExpressionContext ctx) {
 		String name = ctx.Identifier().getSymbol().getText();
         Symbol var = currentScope.resolve(name);
@@ -228,7 +237,10 @@ public class TypeChecker extends MinijavaBaseVisitor<Klass> {
         }
 		return var.getType();
 	}
-	@Override public Klass visitThisExpression(@NotNull MinijavaParser.ThisExpressionContext ctx) { visitChildren(ctx); return Scope.getEnclosingKlass(currentScope);}
+	@Override public Klass visitThisExpression(@NotNull MinijavaParser.ThisExpressionContext ctx) { 
+		visitChildren(ctx); 
+		return Scope.getEnclosingKlass(currentScope);
+	}
 	
 	@Override public Klass visitArrayInstantiationExpression(@NotNull MinijavaParser.ArrayInstantiationExpressionContext ctx) {
 		Klass type = visit(ctx.expression());

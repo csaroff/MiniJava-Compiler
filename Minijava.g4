@@ -9,7 +9,13 @@ mainClass
 :	'class' Identifier '{' 'public' 'static' 'void' 'main' '(' 'String' '[' ']' Identifier ')' '{' statement '}' '}';
 
 classDeclaration	
-:	'class' Identifier ( 'extends' Identifier )? '{' varDeclaration* methodDeclaration* '}';
+:	'class' Identifier ( 'extends' Identifier )? '{' fieldDeclaration* methodDeclaration* '}';
+
+fieldDeclaration
+:	varDeclaration ;
+
+localDeclaration
+:	varDeclaration ;
 
 varDeclaration	
 :	type Identifier ';';
@@ -26,7 +32,7 @@ parameter
 ;
 
 methodBody
-:	varDeclaration* statement* RETURN expression ';'
+:	localDeclaration* statement* RETURN expression ';'
 ;
 
 type	
@@ -45,7 +51,7 @@ statement
 #nestedStatement
 |	'if' LP expression RP ifBlock 'else' elseBlock
 #ifElseStatement
-|	'while' LP expression RP statement
+|	'while' LP expression RP whileBlock
 #whileStatement
 |	'System.out.println' LP  expression RP ';'
 #printStatement
@@ -60,6 +66,10 @@ ifBlock
 ;
 
 elseBlock
+:	statement
+;
+
+whileBlock
 :	statement
 ;
 

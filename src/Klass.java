@@ -1,10 +1,11 @@
 import java.util.*;
+import org.objectweb.asm.*;
 public class Klass implements Scope{
 	public Klass superKlass;
 	private boolean isReference;
 	private String name;
 	private Map<String, Symbol> symTable = new HashMap<String, Symbol>();
-    //private Map<String, Symbol> initializedVariables = new HashMap<String, Symbol>();
+    private org.objectweb.asm.commons.Method asmConstructor;
 
     public Klass(String name, boolean isReference){
        this.name = name; 
@@ -76,5 +77,24 @@ public class Klass implements Scope{
 
     public String toString(){
     	return name;
+    }
+    //public void setAsmConstructor(org.objectweb.asm.commons.Method asmConstructor){
+    //    this.asmConstructor = asmConstructor;
+    //}
+    //public org.objectweb.asm.commons.Method getAsmConstructor(){
+    //    return asmConstructor;
+    //}
+    public Type asAsmType(){
+        /** Returns an asm.Type representation for this klass. */
+        if(this.name.equals("int")){
+            return Type.INT_TYPE;
+        }else if(this.name.equals("boolean")){
+            return Type.BOOLEAN_TYPE;
+        }else if(this.name.equals("int[]")){
+            return Type.getType(int[].class);
+        }else{
+            //System.out.println("this.name = " + this.name);
+            return Type.getType("L" + this.name + ";");
+        }
     }
 }

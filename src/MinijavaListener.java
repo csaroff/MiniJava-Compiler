@@ -166,6 +166,16 @@ public interface MinijavaListener extends ParseTreeListener {
 	 */
 	void exitParameterList(@NotNull MinijavaParser.ParameterListContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link MinijavaParser#fieldDeclaration}.
+	 * @param ctx the parse tree
+	 */
+	void enterFieldDeclaration(@NotNull MinijavaParser.FieldDeclarationContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MinijavaParser#fieldDeclaration}.
+	 * @param ctx the parse tree
+	 */
+	void exitFieldDeclaration(@NotNull MinijavaParser.FieldDeclarationContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code methodCallExpression}
 	 * labeled alternative in {@link MinijavaParser#expression}.
 	 * @param ctx the parse tree
@@ -177,6 +187,16 @@ public interface MinijavaListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitMethodCallExpression(@NotNull MinijavaParser.MethodCallExpressionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MinijavaParser#localDeclaration}.
+	 * @param ctx the parse tree
+	 */
+	void enterLocalDeclaration(@NotNull MinijavaParser.LocalDeclarationContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MinijavaParser#localDeclaration}.
+	 * @param ctx the parse tree
+	 */
+	void exitLocalDeclaration(@NotNull MinijavaParser.LocalDeclarationContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code ifElseStatement}
 	 * labeled alternative in {@link MinijavaParser#statement}.
@@ -209,6 +229,16 @@ public interface MinijavaListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitVarDeclaration(@NotNull MinijavaParser.VarDeclarationContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MinijavaParser#whileBlock}.
+	 * @param ctx the parse tree
+	 */
+	void enterWhileBlock(@NotNull MinijavaParser.WhileBlockContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MinijavaParser#whileBlock}.
+	 * @param ctx the parse tree
+	 */
+	void exitWhileBlock(@NotNull MinijavaParser.WhileBlockContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code intLitExpression}
 	 * labeled alternative in {@link MinijavaParser#expression}.
@@ -256,18 +286,6 @@ public interface MinijavaListener extends ParseTreeListener {
 	 */
 	void exitSubExpression(@NotNull MinijavaParser.SubExpressionContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code mulExpression}
-	 * labeled alternative in {@link MinijavaParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void enterMulExpression(@NotNull MinijavaParser.MulExpressionContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code mulExpression}
-	 * labeled alternative in {@link MinijavaParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void exitMulExpression(@NotNull MinijavaParser.MulExpressionContext ctx);
-	/**
 	 * Enter a parse tree produced by the {@code identifierExpression}
 	 * labeled alternative in {@link MinijavaParser#expression}.
 	 * @param ctx the parse tree
@@ -279,6 +297,18 @@ public interface MinijavaListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitIdentifierExpression(@NotNull MinijavaParser.IdentifierExpressionContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code mulExpression}
+	 * labeled alternative in {@link MinijavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterMulExpression(@NotNull MinijavaParser.MulExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code mulExpression}
+	 * labeled alternative in {@link MinijavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitMulExpression(@NotNull MinijavaParser.MulExpressionContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code notExpression}
 	 * labeled alternative in {@link MinijavaParser#expression}.

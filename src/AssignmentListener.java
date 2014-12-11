@@ -13,6 +13,9 @@ public class AssignmentListener extends MinijavaBaseListener {
     //Stack<Scope> scopes = new Stack<Scope>();
     ParseTreeProperty<Scope> scopes;
     Scope currentScope = null;
+    boolean isField;
+    boolean isArg;
+    int argCount=-1;
     public AssignmentListener(final Map<String, Klass> klasses, ParseTreeProperty<Scope> scopes, MinijavaParser parser){
         this.scopes=scopes;
         this.klasses=klasses;
@@ -48,13 +51,17 @@ public class AssignmentListener extends MinijavaBaseListener {
         //currentKlass=null;
         currentScope = currentScope.getEnclosingScope();
     }
+
+    @Override public void enterFieldDeclaration(@NotNull MinijavaParser.FieldDeclarationContext ctx) {isField=true;}
+    @Override public void exitFieldDeclaration(@NotNull MinijavaParser.FieldDeclarationContext ctx) {isField=false;}
+    //@Override public void enterLocalDeclaration(@NotNull MinijavaParser.LocalDeclarationContext ctx) {isField=false;}
     @Override public void enterVarDeclaration(@NotNull MinijavaParser.VarDeclarationContext ctx) {
         String typeName = ctx.type().getText();
         String varName = ctx.Identifier().getText();
         if(currentScope.resolveLocally(varName)!=null){
             ErrorPrinter.printSymbolAlreadyDefinedError(parser, ctx.Identifier().getSymbol(), "variable", varName, currentScope.getScopeName());
         }
-        currentScope.define(new Symbol(varName, klasses.get(typeName)));
+        currentScope.define(new Symbol(varName, klasses.get(typeName), isField));
     }
     @Override public void enterMethodDeclaration(@NotNull MinijavaParser.MethodDeclarationContext ctx) {
         Klass returnType = klasses.get(ctx.type().getText());
@@ -98,7 +105,8 @@ public class AssignmentListener extends MinijavaBaseListener {
                 "location: class " + currentScope.getEnclosingScope().getScopeName()
             );
         }
-        parameter = new Symbol(ctx.Identifier().getText(), parameterType);
+        //parameter is not a field
+        parameter = new Symbol(ctx.Identifier().getText(), parameterType, false);
         ((Method)currentScope).addParameter(parameter);
     }
     @Override public void enterNestedStatement(@NotNull MinijavaParser.NestedStatementContext ctx){

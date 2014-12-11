@@ -18,6 +18,7 @@ public class Main{
 		ANTLRInputStream input = new ANTLRInputStream(is);
 		Map<String, Klass> klasses = new HashMap<String, Klass>();//Symbol Table
 	    ParseTreeProperty<Scope> scopes = new ParseTreeProperty<Scope>();
+        ParseTreeProperty<Klass> callerTypes = new ParseTreeProperty<Klass>();
 		MinijavaLexer lexer = new MinijavaLexer(input);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 		MinijavaParser parser = new MinijavaParser(tokens);
@@ -50,7 +51,7 @@ public class Main{
             System.err.println(ErrorPrinter.getErrorCount() + " errors.");
             System.exit(1);
         }
-        TypeChecker typeChecker = new TypeChecker(klasses, scopes, parser);
+        TypeChecker typeChecker = new TypeChecker(klasses, scopes, callerTypes, parser);
         typeChecker.visit(tree);
         
         if(!ErrorPrinter.noErrors()){
@@ -64,7 +65,7 @@ public class Main{
             System.err.println(ErrorPrinter.getErrorCount() + " errors.");
             System.exit(1);
         }
-        CodeGenerator codeGenerator = new CodeGenerator(klasses, scopes, parser);
+        CodeGenerator codeGenerator = new CodeGenerator(klasses, scopes, callerTypes, parser);
         ParseTreeWalker.DEFAULT.walk(codeGenerator, tree);
         
         if(!ErrorPrinter.noErrors()){
@@ -73,20 +74,6 @@ public class Main{
         }
 	}
 
-    //public static String getMethodSignature(MinijavaParser.MethodDeclarationContext ctx){
-    //    String methodName = ctx.Identifier().getText() + "(";
-    //    if(ctx.parameterList()!=null){
-    //        List<MinijavaParser.ParameterContext> paramCtxs = ctx.parameterList().parameter();
-    //        for(MinijavaParser.ParameterContext paramCtx : paramCtxs){
-    //            methodName+= paramCtx.type().getText() + ", ";
-    //        }
-    //        methodName = methodName.substring(0, methodName.length()-2);
-    //    }
-    //    //System.out.println("ctx.parameterList().getText() = " + ctx.parameterList().getText());
-    //    methodName += ")";
-	//	System.out.println("method name: " + methodName);
-    //    return methodName;
-    //}
     public static String getFileName(){
     	return inputFile;
     }

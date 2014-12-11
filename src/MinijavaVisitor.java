@@ -104,12 +104,24 @@ public interface MinijavaVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitParameterList(@NotNull MinijavaParser.ParameterListContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link MinijavaParser#fieldDeclaration}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFieldDeclaration(@NotNull MinijavaParser.FieldDeclarationContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code methodCallExpression}
 	 * labeled alternative in {@link MinijavaParser#expression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitMethodCallExpression(@NotNull MinijavaParser.MethodCallExpressionContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link MinijavaParser#localDeclaration}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitLocalDeclaration(@NotNull MinijavaParser.LocalDeclarationContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code ifElseStatement}
 	 * labeled alternative in {@link MinijavaParser#statement}.
@@ -129,6 +141,12 @@ public interface MinijavaVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitVarDeclaration(@NotNull MinijavaParser.VarDeclarationContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link MinijavaParser#whileBlock}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitWhileBlock(@NotNull MinijavaParser.WhileBlockContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code intLitExpression}
 	 * labeled alternative in {@link MinijavaParser#expression}.
@@ -157,19 +175,19 @@ public interface MinijavaVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitSubExpression(@NotNull MinijavaParser.SubExpressionContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code mulExpression}
-	 * labeled alternative in {@link MinijavaParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitMulExpression(@NotNull MinijavaParser.MulExpressionContext ctx);
-	/**
 	 * Visit a parse tree produced by the {@code identifierExpression}
 	 * labeled alternative in {@link MinijavaParser#expression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitIdentifierExpression(@NotNull MinijavaParser.IdentifierExpressionContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code mulExpression}
+	 * labeled alternative in {@link MinijavaParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMulExpression(@NotNull MinijavaParser.MulExpressionContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code notExpression}
 	 * labeled alternative in {@link MinijavaParser#expression}.

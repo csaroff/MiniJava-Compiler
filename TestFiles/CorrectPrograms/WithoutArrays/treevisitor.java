@@ -348,41 +348,11 @@ class Visitor {
 	return 0;
     }
 
-    public MyVisitor getAsMyVisitor(){
-        int[] y;
-        int x;
-        x=y[y];
-        x=x[0];
-        x = y[4];
-        //x=x**x;
-        //x=x**true;
-        //x=this**x;
-        //x=this**true;
-        //int[] y;
-        //y[y]=y;
-        //y[y]=1;
-        //y[0]=1;
-        //int x;
-        //if(x){
-        //}else{
-        //    x=m;
-        //    x=false;
-        //    x=0;
-        //    m=x;
-
-        //    System.out.println(x);
-        //    System.out.println(true);
-        //}
-        //while(x){
-
-        //}
-        return this;
-    }
 }
 
 
 class MyVisitor extends Visitor {
-    DNE dne;
+
     public int visit(Tree n){
 	int nti ;
 
@@ -400,4 +370,5 @@ class MyVisitor extends Visitor {
 
 	return 0;
     }
+
 }

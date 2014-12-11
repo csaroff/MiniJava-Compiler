@@ -6,7 +6,9 @@ compile:
 	#javac -cp .:/usr/local/lib/* src/Main.java
 aa:
 	make compile
-	make codeGenTest
+	#make codeGenTest
+	make testWithArrays
+	make testWithoutArrays
 all:
 	make generateParser
 	mv *.java src
@@ -22,16 +24,42 @@ codeGenTest:
 	#cd TestFiles/SourceCodeGeneration
 	/opt/jdk1.8.0/bin/java Main TestFiles/SourceCodeGeneration/Main.java ;\
 	java Main
-test:
-	for file in TestFiles/*.java ; do \
+testWithoutArrays:
+	for file in TestFiles/CorrectPrograms/WithoutArrays/*.java ; do \
 		echo "Begin " $$file " parsing" ; \
 		echo "-----------------------------------------------------------" ; \
-		/opt/jdk1.8.0/bin/java -ea -cp ~/apps/Antlr4/antlr-4.4-complete.jar:. Main $$file ; \
+		/opt/jdk1.8.0/bin/java -ea Main $$file ; \
 		echo "-----------------------------------------------------------" ; \
 		echo "End " $$file " parsing" ; \
-		#cat $$file | java Main ; \
 		done
-	#cat factorial.java | java Main
+	echo "---------------------------------------------------------------" 
+	/opt/jdk1.8.0/bin/java Factorial
+	echo "---------------------------------------------------------------" 
+	/opt/jdk1.8.0/bin/java TreeVisitor
+	echo "---------------------------------------------------------------" 
+	/opt/jdk1.8.0/bin/java LinkedList
+	echo "---------------------------------------------------------------" 
+	/opt/jdk1.8.0/bin/java BinaryTree
+
+testWithArrays:
+	for file in TestFiles/CorrectPrograms/ArraysIncluded/*.java ; do \
+		echo "Begin " $$file " parsing" ; \
+		echo "-----------------------------------------------------------" ; \
+		/opt/jdk1.8.0/bin/java -ea Main $$file ; \
+		echo "-----------------------------------------------------------" ; \
+		echo "End " $$file " parsing" ; \
+		done
+	echo "---------------------------------------------------------------" 
+	/opt/jdk1.8.0/bin/java BinarySearch
+	echo "---------------------------------------------------------------" 
+	/opt/jdk1.8.0/bin/java BubbleSort
+	echo "---------------------------------------------------------------" 
+	/opt/jdk1.8.0/bin/java LinearSearch
+	echo "---------------------------------------------------------------" 
+	/opt/jdk1.8.0/bin/java QuickSort
+
+
+	
 mirror:
 	/opt/jdk1.8.0/bin/java org.antlr.v4.runtime.misc.TestRig Minijava goal factorial.java
 testSyntax:

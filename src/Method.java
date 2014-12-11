@@ -8,7 +8,8 @@ public class Method extends Symbol implements Scope{
     //private Set<Symbols> ifElseInitialized= null;
 
 	public Method(Klass returnType, String name, Scope owner){
-		super(name, returnType);
+		//methods are fields
+		super(name, returnType, true);
 		this.owner=owner;
 	}
 	
@@ -98,6 +99,27 @@ public class Method extends Symbol implements Scope{
 	//}
 	public String toString(){
 		return name;
+	}
+	public String fullName(){
+		String fullName = this.getType().toString() + " ";
+		fullName += name;
+		fullName = fullName.substring(0, fullName.length()-1);
+		boolean hasParameter = false;
+		for(Symbol parameter : parameters.values()){
+			fullName += parameter.getType().getScopeName() + ", ";
+			hasParameter=true;
+		}
+		if(hasParameter){
+			fullName = fullName.substring(0, fullName.length()-2);
+		}
+		fullName += ")";
+		//System.out.println(fullName);
+		return fullName;
+	}
+	public org.objectweb.asm.commons.Method asAsmMethod(){
+	/**	Returns an asm.commons.Method representation of this Method.*/
+		return org.objectweb.asm.commons.Method.getMethod(this.fullName(), true);
+	
 	}
 	/** -----------------------------------------------------------------
     |            				Static Methods.  				         |
