@@ -175,19 +175,19 @@ public interface MinijavaVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitSubExpression(@NotNull MinijavaParser.SubExpressionContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code identifierExpression}
-	 * labeled alternative in {@link MinijavaParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitIdentifierExpression(@NotNull MinijavaParser.IdentifierExpressionContext ctx);
-	/**
 	 * Visit a parse tree produced by the {@code mulExpression}
 	 * labeled alternative in {@link MinijavaParser#expression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitMulExpression(@NotNull MinijavaParser.MulExpressionContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code identifierExpression}
+	 * labeled alternative in {@link MinijavaParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIdentifierExpression(@NotNull MinijavaParser.IdentifierExpressionContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code notExpression}
 	 * labeled alternative in {@link MinijavaParser#expression}.

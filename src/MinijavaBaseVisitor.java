@@ -192,14 +192,14 @@ public class MinijavaBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitIdentifierExpression(@NotNull MinijavaParser.IdentifierExpressionContext ctx) { return visitChildren(ctx); }
+	@Override public T visitMulExpression(@NotNull MinijavaParser.MulExpressionContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitMulExpression(@NotNull MinijavaParser.MulExpressionContext ctx) { return visitChildren(ctx); }
+	@Override public T visitIdentifierExpression(@NotNull MinijavaParser.IdentifierExpressionContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

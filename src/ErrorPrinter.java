@@ -95,12 +95,7 @@ public final class ErrorPrinter{
         }
         System.err.println();
     }
-    //public static void printErrorMessage(String message){
-    //  System.err.println("  " + message);
-    //}
-    //public static void printFileName(){
-    //    System.err.print(Main.getFileName());
-    //}
+
     public static void reportCyclicInheritance(Recognizer recognizer, MinijavaParser.ClassDeclarationContext ctx, Klass klass){
         Klass original = klass;
         while(klass!=null){

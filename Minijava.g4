@@ -74,38 +74,54 @@ whileBlock
 ;
 
 expression
-:   expression AND expression
-# andExpression
-|   expression LT expression
-# ltExpression  
-|   expression PLUS expression
-# addExpression
-|   expression MINUS expression
-# subExpression
-|   expression TIMES expression
-# mulExpression
-|	expression POWER expression
-# powExpression
-|   expression LSB expression RSB
+:   expression LSB expression RSB
 # arrayAccessExpression
+
 |   expression DOTLENGTH
 # arrayLengthExpression
+
 |   expression '.' Identifier '(' ( expression ( ',' expression )* )? ')'
 # methodCallExpression
-|   IntegerLiteral
-# intLitExpression
-|   BooleanLiteral
-# booleanLitExpression
-|   Identifier
-# identifierExpression
-|   'this'
-# thisExpression
-|   'new' 'int' LSB expression RSB
-# arrayInstantiationExpression
-|   'new' Identifier '(' ')'
-# objectInstantiationExpression
+
 |   NOT expression
 # notExpression
+
+|   'new' 'int' LSB expression RSB
+# arrayInstantiationExpression
+
+|   'new' Identifier '(' ')'
+# objectInstantiationExpression
+
+|	expression POWER expression
+# powExpression
+
+|   expression TIMES expression
+# mulExpression
+
+|   expression PLUS expression
+# addExpression
+
+|   expression MINUS expression
+# subExpression
+
+|   expression LT expression
+# ltExpression  
+
+|   expression AND expression
+# andExpression
+
+|   IntegerLiteral
+# intLitExpression
+
+|   BooleanLiteral
+# booleanLitExpression
+
+|   Identifier
+# identifierExpression
+
+|   'this'
+# thisExpression
+
 |   '(' expression ')'
 # parenExpression
 ;

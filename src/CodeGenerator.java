@@ -268,6 +268,32 @@ public class CodeGenerator extends MinijavaBaseListener implements Opcodes{
 	@Override public void exitMulExpression(@NotNull MinijavaParser.MulExpressionContext ctx) {
 		methodGenerator.math(GeneratorAdapter.MUL, Type.INT_TYPE);
 	}
+	//@Override public void enterPowExpression(@NotNull MinijavaParser.PowExpressionContext ctx){}
+	@Override public void exitPowExpression(@NotNull MinijavaParser.PowExpressionContext ctx){
+		Symbol base = new Symbol("base", klasses.get("int"), false);
+        Type type = Type.INT_TYPE;
+    	base.setLocalIdentifier(methodGenerator.newLocal(type));
+		Symbol pow = new Symbol("pow", klasses.get("int"), false);
+    	pow.setLocalIdentifier(methodGenerator.newLocal(type));
+		//Symbol result = new Symbol("result", klasses.get("int"), false)	;
+    	//result.setLocalIdentifier(methodGenerator.newLocal(type));
+    	//methodGenerator.storeLocal(result.getLocalIdentifier(), type);
+    	methodGenerator.storeLocal(pow.getLocalIdentifier(), type);
+    	methodGenerator.storeLocal(base.getLocalIdentifier(), type);
+    	methodGenerator.push(1);
+    	Label end = methodGenerator.newLabel();
+    	Label loop = methodGenerator.mark();
+    	methodGenerator.loadLocal(pow.getLocalIdentifier(), type); 
+    	methodGenerator.ifZCmp(GeneratorAdapter.EQ, end);
+    	methodGenerator.loadLocal(base.getLocalIdentifier(), type); 
+    	methodGenerator.math(GeneratorAdapter.MUL, Type.INT_TYPE);
+    	methodGenerator.loadLocal(pow.getLocalIdentifier(), type);
+    	methodGenerator.push(1);
+    	methodGenerator.math(GeneratorAdapter.SUB, Type.INT_TYPE);
+    	methodGenerator.storeLocal(pow.getLocalIdentifier(), type);
+    	methodGenerator.goTo(loop);
+    	methodGenerator.mark(end);
+	}
 	//@Override public void enterArrayAccessExpression(@NotNull MinijavaParser.ArrayAccessExpressionContext ctx) { }
 	@Override public void exitArrayAccessExpression(@NotNull MinijavaParser.ArrayAccessExpressionContext ctx){
 		methodGenerator.arrayLoad(Type.INT_TYPE);
