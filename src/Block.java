@@ -2,7 +2,6 @@ import java.util.*;
 public class Block implements Scope{
 	private Map<String, Symbol> locals = new HashMap<String, Symbol>();
 	private Map<String, Symbol> initializedVariables = new HashMap<String, Symbol>();
-    //private Set<Symbols> ifElseInitialized= null;
 	private Scope enclosingScope;
 	private String scopeName = "local";
 
@@ -29,15 +28,15 @@ public class Block implements Scope{
     }
 
     /** Look up name in this scope or in enclosing scope if not here */
-    @Override public Symbol resolve(String name){
+    @Override public Symbol lookup(String name){
     	if(locals.containsKey(name)){
     		return locals.get(name);
     	}else{
-    		return this.getEnclosingScope().resolve(name);
+    		return this.getEnclosingScope().lookup(name);
     	}
     }
 
-	@Override public Symbol resolveLocally(String name){
+	@Override public Symbol lookupLocally(String name){
 		return locals.get(name);
 	}
     

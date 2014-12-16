@@ -114,7 +114,7 @@ public class CodeGenerator extends MinijavaBaseListener implements Opcodes{
 	}
 	//@Override public void enterLocalDeclaration(@NotNull MinijavaParser.LocalDeclarationContext ctx) { }
 	@Override public void exitLocalDeclaration(@NotNull MinijavaParser.LocalDeclarationContext ctx) {
-        Symbol var = currentScope.resolve(ctx.varDeclaration().Identifier().getText());
+        Symbol var = currentScope.lookup(ctx.varDeclaration().Identifier().getText());
         Type type = var.getType().asAsmType();
     	if(!var.hasLocalIdentifier()){
         	var.setLocalIdentifier(methodGenerator.newLocal(type));
@@ -123,7 +123,7 @@ public class CodeGenerator extends MinijavaBaseListener implements Opcodes{
     	}
 	}
 	@Override public void exitVarDeclaration(@NotNull MinijavaParser.VarDeclarationContext ctx){
-        Symbol var = currentScope.resolve(ctx.Identifier().getText());
+        Symbol var = currentScope.lookup(ctx.Identifier().getText());
         if(var.isField()){
 			cw.visitField(
 				ACC_PROTECTED,
@@ -152,7 +152,7 @@ public class CodeGenerator extends MinijavaBaseListener implements Opcodes{
 	}
 	//@Override public void exitParameterList(@NotNull MinijavaParser.ParameterListContext ctx){}
 	@Override public void enterParameter(@NotNull MinijavaParser.ParameterContext ctx){
-		currentScope.resolve(ctx.Identifier().getText()).setParameterIdentifier(argCount);
+		currentScope.lookup(ctx.Identifier().getText()).setParameterIdentifier(argCount);
 		argCount++;
 	}
 	//@Override public void exitParameter(@NotNull MinijavaParser.ParameterContext ctx){}
@@ -169,13 +169,13 @@ public class CodeGenerator extends MinijavaBaseListener implements Opcodes{
 
 	/** --------------Generates code for doing field and local variable assignment.-----------------*/
     @Override public void enterVariableAssignmentStatement(@NotNull MinijavaParser.VariableAssignmentStatementContext ctx){
-        Symbol var = currentScope.resolve(ctx.Identifier().getText());
+        Symbol var = currentScope.lookup(ctx.Identifier().getText());
         if(var.isField()){
             methodGenerator.loadThis();
         }
     }
     @Override public void exitVariableAssignmentStatement(@NotNull MinijavaParser.VariableAssignmentStatementContext ctx){
-        Symbol var = currentScope.resolve(ctx.Identifier().getText());
+        Symbol var = currentScope.lookup(ctx.Identifier().getText());
         Type type = var.getType().asAsmType();
         if(var.isField()){
         	//System.out.println("Variable " + var.getName() + " is a field");
@@ -189,7 +189,7 @@ public class CodeGenerator extends MinijavaBaseListener implements Opcodes{
         }
     }
 	@Override public void enterArrayAssignmentStatement(@NotNull MinijavaParser.ArrayAssignmentStatementContext ctx){
-        Symbol var = currentScope.resolve(ctx.Identifier().getText());
+        Symbol var = currentScope.lookup(ctx.Identifier().getText());
         Type type = var.getType().asAsmType();
         if(var.isField()){
             Type owner = ((Klass)currentScope.getEnclosingScope()).asAsmType();
@@ -305,7 +305,7 @@ public class CodeGenerator extends MinijavaBaseListener implements Opcodes{
 
 	@Override public void exitMethodCallExpression(@NotNull MinijavaParser.MethodCallExpressionContext ctx){
 		Klass klass = callerTypes.get(ctx);
-		methodGenerator.invokeVirtual(klass.asAsmType(), ((Method)klass.resolve(ctx.Identifier().getText() + "()")).asAsmMethod());
+		methodGenerator.invokeVirtual(klass.asAsmType(), ((Method)klass.lookup(ctx.Identifier().getText() + "()")).asAsmMethod());
 	}
 	@Override public void enterIntLitExpression(@NotNull MinijavaParser.IntLitExpressionContext ctx){
 		methodGenerator.push(Integer.parseInt(ctx.IntegerLiteral().getText()));
@@ -315,7 +315,7 @@ public class CodeGenerator extends MinijavaBaseListener implements Opcodes{
 		methodGenerator.push(predicate);
 	}
 	@Override public void exitIdentifierExpression(@NotNull MinijavaParser.IdentifierExpressionContext ctx){
-		Symbol var = currentScope.resolve(ctx.Identifier().getText());
+		Symbol var = currentScope.lookup(ctx.Identifier().getText());
         Type type = var.getType().asAsmType();
         if(var.isParameter()){
         	methodGenerator.loadArg(var.getParameterListIdentifier());

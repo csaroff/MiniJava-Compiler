@@ -5,7 +5,6 @@ public class Method extends Symbol implements Scope{
 	private Scope body;
 	private Map<String, Symbol> locals = new HashMap<String, Symbol>();
 	private Map<String, Symbol> initializedVariables = new HashMap<String, Symbol>();
-    //private Set<Symbols> ifElseInitialized= null;
 
 	public Method(Klass returnType, String name, Scope owner){
 		//methods are fields
@@ -29,17 +28,17 @@ public class Method extends Symbol implements Scope{
         initializedVariables.put(sym.getName(), sym);
     }
 
-	@Override public Symbol resolve(String name){
+	@Override public Symbol lookup(String name){
 		if(parameters.containsKey(name)){
 			return parameters.get(name);
 		}else if(locals.containsKey(name)){
 			return locals.get(name);
 		}else{
-			return this.getEnclosingScope().resolve(name);
+			return this.getEnclosingScope().lookup(name);
 		}
 	}
 
-	@Override public Symbol resolveLocally(String name){
+	@Override public Symbol lookupLocally(String name){
 		if(parameters.containsKey(name)){
 			return parameters.get(name);
 		}else{

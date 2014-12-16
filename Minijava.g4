@@ -37,13 +37,9 @@ methodBody
 
 type	
 :	'int' '[' ']'
-//#intArrayType
 |	'boolean'
-//#booleanType
 |	'int'
-//#intType
 |	Identifier
-//#referenceType
 ;	
 
 statement	
@@ -140,22 +136,6 @@ LP:'(';
 RP:')';
 RETURN: 'return';
 EQ: '=';
-
-//expression	
-//:	expression ( '&&' | '<' | '+' | '-' | '*' | '**' ) expression 
-//|   expression '[' expression ']'
-//|	expression '.' 'length'
-//|	expression '.' Identifier '(' ( expression ( ',' expression )* )? ')'
-//|	IntegerLiteral
-//|	'true'
-//|	'false'
-//|	Identifier
-//|	'this'
-//|	'new' 'int' '[' expression ']'
-//|	'new' Identifier '(' ')'
-//|	'!' expression
-//|	'(' expression ')'
-//;	
 
 BooleanLiteral
 :	'true'

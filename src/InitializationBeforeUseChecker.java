@@ -66,7 +66,7 @@ public class InitializationBeforeUseChecker extends MinijavaBaseVisitor<Set<Symb
     }
     @Override public Set<Symbol> visitVariableAssignmentStatement(@NotNull MinijavaParser.VariableAssignmentStatementContext ctx) {
         Set<Symbol> sym = visitChildren(ctx);
-        currentScope.initialize(currentScope.resolve(ctx.Identifier().getText()));
+        currentScope.initialize(currentScope.lookup(ctx.Identifier().getText()));
         return sym;
     }
     @Override public Set<Symbol> visitIdentifierExpression(@NotNull MinijavaParser.IdentifierExpressionContext ctx) {

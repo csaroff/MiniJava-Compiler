@@ -5,8 +5,6 @@ import java.util.*;
 public final class ErrorPrinter{
     private static boolean hasError = false;
     private static int errorCount=0;
-	//private ErrorPrinter(){
-    //}
     public static boolean noErrors(){
         return !hasError;
     }
@@ -15,7 +13,20 @@ public final class ErrorPrinter{
         errorCount++;
     }
     public static int getErrorCount(){return errorCount;}
-    public static void resetErrorCount(){errorCount=0;}
+
+    /**
+     * If errors have been encountered when this method has been called,
+     * print the error count and exit the program.
+     */
+    public static void exitOnErrors(){
+        //If errors were encountered
+        if(!ErrorPrinter.noErrors()){
+            //Print the number of errors that were encountered
+            System.err.println(ErrorPrinter.getErrorCount() + " errors.");
+            //Exit the program
+            System.exit(1);
+        }
+    }
     public static void printFileNameAndLineNumber(Token offendingToken){
         reportError();
         System.err.print(Main.getFileName()+":"+offendingToken.getLine()+": ");

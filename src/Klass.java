@@ -2,14 +2,16 @@ import java.util.*;
 import org.objectweb.asm.*;
 public class Klass implements Scope{
 	public Klass superKlass;
-	private boolean isReference;
 	private String name;
 	private Map<String, Symbol> symTable = new HashMap<String, Symbol>();
     private org.objectweb.asm.commons.Method asmConstructor;
 
-    public Klass(String name, boolean isReference){
+    /**
+     * Constructs a new Klass with the given name
+     * @param  name The name of the class that you are representing
+     */
+    public Klass(String name){
        this.name = name; 
-       this.isReference = isReference;
     }
 
     public Klass getSuperKlass(){
@@ -43,7 +45,7 @@ public class Klass implements Scope{
     }
 
     /** Look up name in this scope or in enclosing scope if not here */
-    @Override public Symbol resolve(String name){
+    @Override public Symbol lookup(String name){
     	//assert !(fields.contains(name) && methods.contains(name));
     	Symbol symbol = null;
     	for(Klass klass = this; symbol==null&&klass!=null; klass=klass.getSuperKlass()){
@@ -52,12 +54,12 @@ public class Klass implements Scope{
     	return symbol;
     }
 
-    @Override public Symbol resolveLocally(String name){
+    @Override public Symbol lookupLocally(String name){
     	return symTable.get(name);
     }
     
     @Override public boolean hasBeenInitialized(String name){
-        return this.resolve(name)!=null;
+        return this.lookup(name)!=null;
     }
     
     @Override public Set<Symbol> getInitializedVariables(){

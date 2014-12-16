@@ -18,7 +18,7 @@ public class TypeChecker extends MinijavaBaseVisitor<Klass> {
 	Klass INT;
 	Klass INTARRAY;
 	Klass BOOLEAN;
-	public TypeChecker(final Map<String, Klass> klasses, ParseTreeProperty<Scope> scopes, ParseTreeProperty<Klass> callerTypes, MinijavaParser parser)throws Exception{
+	public TypeChecker(final Map<String, Klass> klasses, ParseTreeProperty<Scope> scopes, ParseTreeProperty<Klass> callerTypes, MinijavaParser parser){
 		INT = klasses.get("int");
 		this.klasses = klasses;
 		this.scopes=scopes;
@@ -40,7 +40,7 @@ public class TypeChecker extends MinijavaBaseVisitor<Klass> {
 		Klass originalKlass = ((Klass)(currentScope.getEnclosingScope())).getSuperKlass();
 		Method originalMethod;
 		if(originalKlass==null){ originalMethod=null; }
-		else{ originalMethod=(Method)originalKlass.resolve(currentScope.getScopeName());}
+		else{ originalMethod=(Method)originalKlass.lookup(currentScope.getScopeName());}
 			
 		Method currentMethod = (Method)currentScope;
 		Klass currentKlass = (Klass)currentMethod.getEnclosingScope();
@@ -109,7 +109,7 @@ public class TypeChecker extends MinijavaBaseVisitor<Klass> {
     @Override public Klass visitVariableAssignmentStatement(MinijavaParser.VariableAssignmentStatementContext ctx){
         //correctly reported errors in all cases.
         String name = ctx.Identifier().getSymbol().getText();
-        Symbol var = currentScope.resolve(name);
+        Symbol var = currentScope.lookup(name);
 
         Klass rightSide = visit(ctx.expression());
         if ( var==null ) {
@@ -123,7 +123,7 @@ public class TypeChecker extends MinijavaBaseVisitor<Klass> {
         //correctly reported errors in all cases
 		//ErrorPrinter.printFileNameAndLineNumber(ctx.Identifier().getSymbol());
         String name = ctx.Identifier().getSymbol().getText();
-        Symbol var = currentScope.resolve(name);
+        Symbol var = currentScope.lookup(name);
         Klass index = visit(ctx.expression(0));
         Klass rightSide = visit(ctx.expression(1));
         if ( var==null ) {
@@ -192,7 +192,7 @@ public class TypeChecker extends MinijavaBaseVisitor<Klass> {
 			return null;
 		}
 		String methodName = ctx.Identifier().getText() +"()";
-		Method method = (Method)(type.resolve(methodName));
+		Method method = (Method)(type.lookup(methodName));
         if (method==null ) {
         		ErrorPrinter.printUnresolvedSymbolError(parser, ctx.Identifier().getSymbol(), "method", type);
         		return null;
@@ -230,7 +230,7 @@ public class TypeChecker extends MinijavaBaseVisitor<Klass> {
 	}
 	@Override public Klass visitIdentifierExpression(@NotNull MinijavaParser.IdentifierExpressionContext ctx) {
 		String name = ctx.Identifier().getSymbol().getText();
-        Symbol var = currentScope.resolve(name);
+        Symbol var = currentScope.lookup(name);
         if ( var==null ){
         	ErrorPrinter.printUnresolvedSymbolError(parser, ctx.Identifier().getSymbol(), "variable", Scope.getEnclosingKlass(currentScope));
         	return null;

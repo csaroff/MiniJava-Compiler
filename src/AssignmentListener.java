@@ -10,7 +10,6 @@ import java.util.*;
 public class AssignmentListener extends MinijavaBaseListener {
     MinijavaParser parser;
     final Map<String, Klass> klasses;
-    //Stack<Scope> scopes = new Stack<Scope>();
     ParseTreeProperty<Scope> scopes;
     Scope currentScope = null;
     boolean isField;
@@ -58,7 +57,7 @@ public class AssignmentListener extends MinijavaBaseListener {
     @Override public void enterVarDeclaration(@NotNull MinijavaParser.VarDeclarationContext ctx) {
         String typeName = ctx.type().getText();
         String varName = ctx.Identifier().getText();
-        if(currentScope.resolveLocally(varName)!=null){
+        if(currentScope.lookupLocally(varName)!=null){
             ErrorPrinter.printSymbolAlreadyDefinedError(parser, ctx.Identifier().getSymbol(), "variable", varName, currentScope.getScopeName());
         }
         currentScope.define(new Symbol(varName, klasses.get(typeName), isField));
@@ -79,7 +78,7 @@ public class AssignmentListener extends MinijavaBaseListener {
         String methodName = Method.getMethodSignature(ctx);
         //System.out.println("Current Scope = " + currentScope);
         //System.out.println("Method Name = " + methodName);
-        if(currentScope.resolveLocally(methodName)!=null){
+        if(currentScope.lookupLocally(methodName)!=null){
             ErrorPrinter.printSymbolAlreadyDefinedError(parser, ctx.Identifier().getSymbol(), "method", methodName, currentScope.getScopeName());
         }
         Scope owner = currentScope;
