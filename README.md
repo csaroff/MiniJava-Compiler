@@ -4,8 +4,7 @@ MiniJava-Compiler
 A compiler for a [small subset](http://www.cambridge.org/resources/052182060X/MCIIJ2e/grammar.htm) of java.
 
 The compiler was written as the main project in an undergraduate [compiler course](http://gee.cs.oswego.edu/dl/csc444/).  
-Minijavac parses Minijava source code.  Reports syntax and semantic errors.  
-Checks to ensure that variables are initialized before they are used.  
+Minijavac parses Minijava source code, reports syntax and semantic errors, and checks to ensure that variables are initialized before they are used.  
 If the source code is error free, java bytecodes(class files) are generated in the current working directory.  
 As a language addition, minijava developers can use the power operator(2<sup>3</sup> ~ 2**3).
 
