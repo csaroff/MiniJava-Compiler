@@ -27,9 +27,12 @@ Overview
 --------
 
 Compilers operate in three main stages:
+
 1. Parse source files to generate a [parse tree](http://en.wikipedia.org/wiki/Parse_tree).  Report any [syntax errors.](http://en.wikipedia.org/wiki/Syntax_error)
+
 2. Traverse the parse tree, building a [symbol table](http://en.wikipedia.org/wiki/Symbol_table) from the source code and reporting all [semantic errors](http://en.wikipedia.org/wiki/Programming_language#Semantics).
-2. Generate code in the target language(java bytecode in this case)
+
+3. Generate code in the target language(java bytecode in this case)
 
 ### Parsing and Syntax Analysis ###
 
@@ -46,7 +49,7 @@ Semantic analysis proceeds in the following fashion.
     1.  [Duplicate klasses]()
     2.  [Cyclic inheritance errors]()
     3.  [Declaration before use]()
-2. The program is [type checked]() to grant as many [static typing](http://en.wikipedia.org/wiki/Type_system#Static_type-checking) guaruntees as it can. eg. x = x + y; is checked to ensure that:
+2. The program is [type checked]() to grant as many [static typing](http://en.wikipedia.org/wiki/Type_system#Static_type-checking) guarantees as it can. eg. x = x + y; is checked to ensure that:
 	* x and y are both integers(+ operates only on ints in minijava)
 	* The left hand side of the assignment, x, has the same type as the expression on the right side. 
 3.	Variables are checked to ensure that they are [initialized before use]().  
