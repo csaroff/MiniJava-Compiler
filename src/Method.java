@@ -1,4 +1,11 @@
 import java.util.*;
+
+/**
+ * A symbol-table representation of a minijava method.
+ * Methods are uniquely both a symbol and a scope, 
+ * since the can be referenced as symbols (a.f()),
+ * and may contain symbols.
+ */
 public class Method extends Symbol implements Scope{
 	private LinkedHashMap<String, Symbol> parameters = new LinkedHashMap<String, Symbol>();
 	private Scope owner;
@@ -6,6 +13,13 @@ public class Method extends Symbol implements Scope{
 	private Map<String, Symbol> locals = new HashMap<String, Symbol>();
 	private Map<String, Symbol> initializedVariables = new HashMap<String, Symbol>();
 
+	/**
+	 * Constructs a new symbol-table representation of a Method.
+	 * @param returnType The return type of this method representation
+	 * @param name the name of this method representation including "()",
+	 * 			   but without the rest of the parameter list.
+	 * @param owner The name of the class that has this method.
+	 */
 	public Method(Klass returnType, String name, Scope owner){
 		//methods are fields
 		super(name, returnType, true);
@@ -50,33 +64,13 @@ public class Method extends Symbol implements Scope{
         if(initializedVariables.containsKey(name) || parameters.containsKey(name)){
             return true;
     	}else{
-            //return false;
             return this.getEnclosingScope().hasBeenInitialized(name);
         }
     }
 
     @Override public Set<Symbol> getInitializedVariables(){
-        return new HashSet<Symbol>(this.initializedVariables.values())
-        //.addAll(this.parameters.values())
-        ;
+        return new HashSet<Symbol>(this.initializedVariables.values());
     }
-    //@Override public void uninitializeSymbols(){
-    //    for(Symbol var : initializedVariables.values()){
-    //        var.uninitialize();
-    //    }
-    //    initializedVariables.clear();
-    //}
-    //@Override public void addIfElseInitialization(Set<Symbol> symbols){
-    //    if(ifElseInitialized==null){
-    //        ifElseInitialized=symbols;
-    //    }else{
-    //        ifElseInitialized.retainAll(symbols);
-    //    }
-    //}
-    //
-    //@Override public void clearIfElseInitialization(){
-    //    ifElseInitialized=null;
-    //}
 
 	public void addParameter(Symbol parameter){
 		parameters.put(parameter.getName(), parameter);
@@ -94,11 +88,14 @@ public class Method extends Symbol implements Scope{
 		}
 		return parameterListDefinition;
 	}
-	//public String getMethodSignature(){
-	//}
+
 	public String toString(){
 		return name;
 	}
+	
+	/**
+	 * @return the full name of this method including return type and argument list.
+	 */
 	public String fullName(){
 		String fullName = this.getType().toString() + " ";
 		fullName += name;
@@ -112,21 +109,28 @@ public class Method extends Symbol implements Scope{
 			fullName = fullName.substring(0, fullName.length()-2);
 		}
 		fullName += ")";
-		//System.out.println(fullName);
 		return fullName;
 	}
+
+	/**
+	 * @return an asm Method representation of this method.
+	 */
 	public org.objectweb.asm.commons.Method asAsmMethod(){
-	/**	Returns an asm.commons.Method representation of this Method.*/
 		return org.objectweb.asm.commons.Method.getMethod(this.fullName(), true);
 	
 	}
 	/** -----------------------------------------------------------------
     |            				Static Methods.  				         |
      -------------------------------------------------------------------*/
+    /**
+     * @param   ctx The parse tree node (context) to get the method signature from.
+     * @return  the method signature of the method associated with the given
+     *          parse tree node (context)
+     */
 	public static String getMethodSignature(MinijavaParser.MethodDeclarationContext ctx){
-		//System.out.println("Method Name = " + ctx.Identifier().getText()+"()");
 		return ctx.Identifier().getText() + "()";
 	}
+
 	//public static String getMethodSignature(MinijavaParser.MethodDeclarationContext ctx){
     //    String methodName = ctx.Identifier().getText() + "(";
     //    if(ctx.parameterList()!=null){

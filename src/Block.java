@@ -27,7 +27,6 @@ public class Block implements Scope{
         initializedVariables.put(sym.getName(), sym);
     }
 
-    /** Look up name in this scope or in enclosing scope if not here */
     @Override public Symbol lookup(String name){
     	if(locals.containsKey(name)){
     		return locals.get(name);
@@ -51,23 +50,4 @@ public class Block implements Scope{
     @Override public Set<Symbol> getInitializedVariables(){
         return new HashSet<Symbol>(this.initializedVariables.values());
     }
-
-    //@Override public void uninitializeSymbols(){
-    //    for(Symbol var : initializedVariables.values()){
-    //        var.uninitialize();
-    //    }
-    //    initializedVariables.clear();
-    //}
-    
-    //@Override public void addIfElseInitialization(Set<Symbol> symbols){
-    //    if(ifElseInitialized==null){
-    //        ifElseInitialized=symbols;
-    //    }else{
-    //        ifElseInitialized.retainAll(symbols);
-    //    }
-    //}
-    //
-    //@Override public void clearIfElseInitialization(){
-    //    ifElseInitialized=null;
-    //}
 }

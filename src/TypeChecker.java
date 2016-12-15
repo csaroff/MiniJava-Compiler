@@ -9,15 +9,24 @@ import org.antlr.v4.runtime.tree.RuleNode;
 import org.antlr.v4.runtime.tree.ParseTree;
 import java.util.*;
 
+/**
+ * A visitor mechanism for performing static type-checking.
+ * This, like the listener mechanism, is just another way of
+ * performaning an in-order traversal of the parse tree.
+ *
+ * The root of the parse tree is visited, each of the children of the root 
+ * are explicitly visited by the method in {@link MinijavaBaseVisitor}.
+ */
 public class TypeChecker extends MinijavaBaseVisitor<Klass> {
-	final Map<String, Klass> klasses;
-	ParseTreeProperty<Scope> scopes;
-	Scope currentScope;
-	ParseTreeProperty<Klass> callerTypes;
-	MinijavaParser parser;
-	Klass INT;
-	Klass INTARRAY;
-	Klass BOOLEAN;
+	private final Map<String, Klass> klasses;
+	private final ParseTreeProperty<Scope> scopes;
+	private Scope currentScope;
+	private ParseTreeProperty<Klass> callerTypes;
+	private final MinijavaParser parser;
+	private final Klass INT;
+	private final Klass INTARRAY;
+	private final Klass BOOLEAN;
+
 	public TypeChecker(final Map<String, Klass> klasses, ParseTreeProperty<Scope> scopes, ParseTreeProperty<Klass> callerTypes, MinijavaParser parser){
 		INT = klasses.get("int");
 		this.klasses = klasses;
@@ -58,7 +67,7 @@ public class TypeChecker extends MinijavaBaseVisitor<Klass> {
 		for(MinijavaParser.StatementContext pCtx : ctx.statement()){visit(pCtx);}
 		Klass formalReturnType = Scope.getEnclosingMethod(currentScope).getType();
 		Klass actualReturnType = visit(ctx.expression());
-		if(actualReturnType!=null && !actualReturnType.isInstanceOf(formalReturnType)){
+		if(actualReturnType!=null && !actualReturnType.isDescendantOf(formalReturnType)){
 			ErrorPrinter.printRequiredFoundError(
 				"error: incompatible types.", parser, ctx.RETURN().getSymbol(), formalReturnType.toString(), actualReturnType.toString());
 		}
@@ -114,7 +123,7 @@ public class TypeChecker extends MinijavaBaseVisitor<Klass> {
         Klass rightSide = visit(ctx.expression());
         if ( var==null ) {
         	ErrorPrinter.printUnresolvedSymbolError(parser, ctx.Identifier().getSymbol(), "variable", Scope.getEnclosingKlass(currentScope));
-        }else if(rightSide!=null && !rightSide.isInstanceOf(var.getType())){
+        }else if(rightSide!=null && !rightSide.isDescendantOf(var.getType())){
 	        	ErrorPrinter.printRequiredFoundError("error: incompatible types.", parser, ctx.Identifier().getSymbol(), var.getType().toString(), (rightSide.toString()));
     	}
        	return null;
@@ -210,7 +219,7 @@ public class TypeChecker extends MinijavaBaseVisitor<Klass> {
                 return method.getType();
             }
             for(int i=0; i<parameterListDefinition.size(); i++){
-                if(!parameterList.get(i).isInstanceOf(parameterListDefinition.get(i))){
+                if(!parameterList.get(i).isDescendantOf(parameterListDefinition.get(i))){
 				ErrorPrinter.printRequiredFoundError(
 					"error: method call parameters of method " + method.getName() + " do not match method definition.",
 					parser, ctx.Identifier().getSymbol(), parameterListDefinition.toString(), parameterList.toString());

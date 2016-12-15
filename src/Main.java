@@ -43,13 +43,18 @@ public class Main{
         //A symbol-table representation of minijava classes for use in semantic analysis.
         Map<String, Klass> klasses = new HashMap<String, Klass>();
 
-        //A collection of the symbol-table scopes of the minijava program.
-        //A ParseTreeProperty<T> is a map from a particular parse tree node, to T.
+        //Since java(and minijava) program symbols don't have global scope,
+        //the symbol table cannot be implemented as a single map.
+        //In order to cope with this requirement, we have a collection of scopes
+        //Each of which contains its own symbol-table.  
+        //This collection of scopes forms a symbol-table for the program.
+        //A ParseTreeProperty<T> is a map from a particular parse tree node(context), to T.
         ParseTreeProperty<Scope> scopes = new ParseTreeProperty<Scope>();
 
-        //The type of the left hand side of a method call expression.
+        //A collection of the types of the left hand sides of method call expressions.
         //ex String stackToString = (new Stack()).toString();
         //To the left of this dot has type Stack ^
+        //This is a "duct tape hack" to assist with code generation.
         ParseTreeProperty<Klass> callerTypes = new ParseTreeProperty<Klass>();
         
         if ( args.length>0 ){
@@ -122,8 +127,7 @@ public class Main{
         ParseTreeWalker.DEFAULT.walk(codeGenerator, tree);
 	}
     /**
-     * A method for returning the filename of the file that is being parsed.
-     * @return the filename.
+     * @return the filename of the file that is being parsed
      */
     public static String getFileName(){
     	return inputFile;

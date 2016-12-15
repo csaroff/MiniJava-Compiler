@@ -12,6 +12,8 @@ killParser:
 	#rm Minijava*.java
 jar:
 	jar cf minijavac.jar *.class
+javadoc:
+	javadoc -d Javadoc src/*.java
 clean:
 	make killParser
 	rm *.class

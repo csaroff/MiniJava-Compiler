@@ -61,7 +61,6 @@ public class ClassNamer extends MinijavaBaseListener {
         klasses.put(currentKlass.getScopeName(),currentKlass);
         currentKlass = new Klass("int");
         klasses.put(currentKlass.getScopeName(),currentKlass);
-        //System.out.println("Klasses.get(\"int\" = " + klasses.get("int"));
         
         currentKlass = new Klass("boolean");
         klasses.put(currentKlass.getScopeName(),currentKlass);
