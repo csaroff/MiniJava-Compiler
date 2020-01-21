@@ -32,7 +32,6 @@ public class TypeChecker extends MinijavaBaseVisitor<Klass> {
 		this.klasses = klasses;
 		this.scopes=scopes;
 		this.callerTypes = callerTypes;        
-		INT = klasses.get("int");
 		INTARRAY = klasses.get("int[]");
 		BOOLEAN = klasses.get("boolean");
 		this.parser=parser;

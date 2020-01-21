@@ -1,4 +1,3 @@
-import org.antlr.v4.runtime.misc.Nullable;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.atn.PredictionMode;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -27,8 +26,10 @@ public class Main{
 	public static void main(String[] args) throws IOException, FileNotFoundException {
         //The file input stream for lexing the file.  
 		InputStream is = null;
+        File initialFile = new File("TestFiles/CorrectPrograms/ArraysIncluded/binarysearch.java");
 
         //A wrapper of the file input stream for lexing the file.
+        is = new FileInputStream(initialFile);
         ANTLRInputStream input = new ANTLRInputStream(is);
 
         //A lexer object for lexing(tokenizing) the file input stream.

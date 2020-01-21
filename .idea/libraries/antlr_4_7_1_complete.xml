@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="antlr-4.7.1-complete">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/Downloads/asm-5.0.3-bin/asm-5.0.3/lib/asm-5.0.3.jar!/" />
+      <root url="file://$USER_HOME$/Downloads/asm-5.0.3-bin/asm-5.0.3/lib/all" />
+      <root url="jar://$USER_HOME$/Downloads/antlr-4.4-complete.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+    <jarDirectory url="file://$USER_HOME$/Downloads/asm-5.0.3-bin/asm-5.0.3/lib/all" recursive="false" />
+  </library>
+</component>
